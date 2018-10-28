@@ -121,6 +121,9 @@ class CreateAccount extends Component {
                     }
                 </DialogContent>
                 <DialogActions>
+                    {stage !== 1 &&
+                        <Button onClick={() => this.handleClick(stage)} onClick={() => this.setState({ stage: stage - 1 })}>Back</Button>
+                    }
                     <Button onClick={() => this.handleClick(stage)}>{button}</Button>
                 </DialogActions>
             </Dialog >
