@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button'
+import CreateAccount from './components/CreateAccount'
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -11,7 +12,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
-import CreateAccount from './components/CreateAccount'
 
 const styles = theme => ({
   root: {
@@ -125,8 +125,8 @@ class HomePage extends Component {
               />
             </div>
             <div className={classes.sectionDesktop}>
-              <Button style={{ marginRight: '20px', color: 'white' }} onClick={() => this.setState({ modal: 'create' })} variant="outlined">Login</Button>
-              <Button variant="contained" color="secondary">Sign Up</Button>
+              <Button style={{ marginRight: '20px', color: 'white' }} variant="outlined">Login</Button>
+              <Button variant="contained" color="secondary" onClick={() => this.setState({ modal: 'create' })} >Sign Up</Button>
             </div>
             <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
