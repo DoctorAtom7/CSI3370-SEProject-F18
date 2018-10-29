@@ -46,7 +46,13 @@ class CreateAccount extends Component {
 
         } else if (stage === 3) {
             if (text === text_two) {
-                //Do stuff
+                if (text.length >= 7) {
+                    this.setState({ stage: 1, text: '', email: '', username: '', password: '', text_two: '' })
+                    this.props.onClose()
+                    this.props.showSnack("Account Created!")
+                } else {
+                    alert("Password too short")
+                }
             } else {
                 alert("Passwords don't match")
             }
@@ -122,7 +128,8 @@ class CreateAccount extends Component {
                 </DialogContent>
                 <DialogActions>
                     {stage !== 1 &&
-                        <Button onClick={() => this.handleClick(stage)} onClick={() => this.setState({ stage: stage - 1 })}>Back</Button>
+                        <Button onClick={() => this.handleClick(stage)}
+                            onClick={() => this.setState({ stage: stage - 1 })}>Back</Button>
                     }
                     <Button onClick={() => this.handleClick(stage)}>{button}</Button>
                 </DialogActions>

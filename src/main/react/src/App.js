@@ -86,7 +86,14 @@ const styles = theme => ({
 
 class HomePage extends Component {
 
-  state = { logged_in: false, theme: 'light', modal: 'none', loading: true, cookies: true }
+  state = {
+    logged_in: false,
+    theme: 'light',
+    modal: 'none',
+    loading: true,
+    snack_shown: true,
+    snack_message: 'This site uses cookies to improve your experience'
+  }
 
   handleClose = (name) => {
     this.setState({ [name]: false })
@@ -96,9 +103,13 @@ class HomePage extends Component {
     this.setState({ modal: 'none' })
   }
 
+  changeSnack = (snack_message) => {
+    this.setState({ snack_message, snack_shown: true })
+  }
+
   render() {
     const { classes } = this.props;
-    const { modal } = this.state
+    const { modal, snack_message, snack_shown } = this.state
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -135,9 +146,9 @@ class HomePage extends Component {
             </div>
           </Toolbar>
         </AppBar>
-        <CreateAccount open={modal === 'create'} onClose={this.modalClose} />
-        {Snack(this.state.cookies, "This site uses cookies to provide you a better browsing experience",
-          "OK", () => this.handleClose("cookies"))}
+        <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
+        {Snack(snack_shown, snack_message,
+          "OK", () => this.handleClose("snack_shown"))}
       </div>
     );
   }
