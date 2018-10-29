@@ -1,4 +1,4 @@
-package com.softwareengineering.forumn.controllers;
+package com.softwareengineering.forum.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
