@@ -10,11 +10,12 @@ Repository for CSI 3370 project.
 
 1. Make sure that you have both the Java Runtime Environment and Java Developer Kit installed. For this project, we'll be using Java 8
 2. Wherever you want this project directory to be, run the command `git clone https://github.com/DoctorAtom7/CSI3370-SEProject-F18`
-3. Navigate to the project directory in the command line and run:
+3. **This is new** - Make sure that you have [Postgres](https://www.postgresql.org/download/) installed on your local machine. Follow the directions on the website for installation. Create a user with the ability to login with a password. Also create a database called 'forum'. Then make sure that the username and password in `src/main/application.properties` matches the username/password combination you just created.
+4. Navigate to the project directory in the command line and run:
     * On Windows: `gradlew.bat clean bootRun`
     * On *nix systems: `./gradlew clean bootRun`   
 (This project uses [Gradle](https://gradle.org/) - a build tool for Java projects to simplify dependency management and make cross-platform development easier. The above command tells gradle to build and run the project. For a full list of what Gradle can do in our project, run the command: `./gradlew tasks`)  
-4. Go to http://localhost:8080 to see the main page of our project. 
+5. Go to http://localhost:8080 to see the main page of our project. 
 
 ## Development Process
 
