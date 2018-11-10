@@ -1,18 +1,11 @@
 package com.softwareengineering.forum.models;
 
-import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-
-import com.softwareengineering.forum.models.*;
 
 @Entity
 @Table(name = "member")
@@ -27,6 +20,8 @@ public class Member {
 	private String email;
 	@Column(name = "password_hash", nullable = false)
 	private String password_hash;
+	@Column(name = "is_moderator")
+	private boolean isMod;
 
 	public Member() {
 	}
@@ -54,7 +49,9 @@ public class Member {
 		return username;
 	}
 
-	public void setUsername(String username) { this.username = username; }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	public String getEmail() {
 		return email;
@@ -70,6 +67,14 @@ public class Member {
 
 	public void setPassword(String password) {
 		this.password_hash = password;
+	}
+
+	public boolean isMod() {
+		return isMod;
+	}
+
+	public void setIsMod(boolean bool) {
+		isMod = bool;
 	}
 
 	@Override
