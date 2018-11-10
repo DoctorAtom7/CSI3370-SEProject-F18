@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -17,16 +18,15 @@ import com.softwareengineering.forum.models.*;
 @Table(name = "member")
 public class Member {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
 	@Column(name = "username", nullable = false, unique = true)
 	private String username;
 	@Column(name = "email", nullable = false, unique = true)
 	private String email;
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-	@PrimaryKeyJoinColumn
-	private Password password;
+	@Column(name = "password_hash", nullable = false)
+	private String password_hash;
 
 	public Member() {
 	}
@@ -64,11 +64,16 @@ public class Member {
 		this.email = email;
 	}
 
-	public Password getPassword() {
-		return password;
+	public String getPassword() {
+		return this.password_hash;
 	}
 
-	public void setPassword(Password password) {
-		this.password = password;
+	public void setPassword(String password) {
+		this.password_hash = password;
+	}
+
+	@Override
+	public String toString() {
+		return ("Email:\t" + this.email + "\nUsername:\t" + this.username + "\nPassword:\t" + this.password_hash);
 	}
 }

@@ -14,9 +14,8 @@ public class MemberService {
 	@PersistenceContext
 	private EntityManager manager;
 
-	public int createMember(Member member) {
+	public void createMember(Member member) {
 		manager.persist(member);
-		return member.getId();
 	}
 
 	public Member getMemberById(int id) {
