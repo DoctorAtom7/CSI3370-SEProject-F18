@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import classNames from 'classnames';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button'
 import CreateAccount from './components/CreateAccount'
+import Login from './components/Login'
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -10,15 +12,53 @@ import SearchIcon from '@material-ui/icons/Search';
 import Snack from './components/Snack'
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import MemberPage from './components/MemberPage'
+import { memberList } from './components/SideLists'
+import Drawer from '@material-ui/core/Drawer';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import Divider from '@material-ui/core/Divider';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
+
+const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
     width: '100%',
   },
-  appbar: {
+  appBar: {
+    display: 'flex',
+    zIndex: theme.zIndex.drawer + 1,
+    justifyContent: 'space-between',
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  toolbar: {
     justifyContent: 'space-between'
+  },
+  drawer: {
+    width: drawerWidth
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
   },
   menuButton: {
     marginLeft: -12,
@@ -80,7 +120,7 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
-  },
+  }
 });
 
 
@@ -92,6 +132,7 @@ class HomePage extends Component {
     modal: 'none',
     loading: true,
     snack_shown: true,
+    open_drawer: false,
     snack_message: 'This site uses cookies to improve your experience'
   }
 
@@ -109,49 +150,82 @@ class HomePage extends Component {
 
   render() {
     const { classes } = this.props;
-    const { modal, snack_message, snack_shown } = this.state
+    const { modal, snack_message, snack_shown, open_drawer } = this.state
     return (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar className={classes.appbar}>
-            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-              <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
-                <MenuIcon />
-              </IconButton>
-              <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                Placeholder
+      <BrowserRouter>
+        <div className={classes.root}>
+          <AppBar position="static" className={classNames(classes.appBar, {
+            [classes.appBarShift]: open_drawer,
+          })}
+          >
+            <Toolbar className={classes.toolbar}>
+              <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                <IconButton className={classes.menuButton} onClick={() => { this.setState({ open_drawer: true }) }} color="inherit" aria-label="Open drawer">
+                  <MenuIcon />
+                </IconButton>
+                <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                  Placeholder
             </Typography>
 
-            </div>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
               </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
-            </div>
-            <div className={classes.sectionDesktop}>
-              <Button style={{ marginRight: '20px', color: 'white' }} variant="outlined">Login</Button>
-              <Button variant="contained" color="secondary" onClick={() => this.setState({ modal: 'create' })} >Sign Up</Button>
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
-                <MoreIcon />
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                />
+              </div>
+              <div className={classes.sectionDesktop}>
+                {localStorage.getItem('forum-token') === null &&
+                  <Fragment>
+                    <Button style={{ marginRight: '20px', color: 'white' }} variant="outlined" onClick={() => this.setState({ modal: 'login' })} component={Link} to="/login">Login</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.setState({ modal: 'create' })} >Sign Up</Button>
+                  </Fragment>
+                }
+                {localStorage.getItem('forum-token') !== null &&
+                  <Button variant="contained" color="secondary" onClick={() => { localStorage.setItem('forum-token', null); window.location.reload() }} >Logout</Button>
+                }
+              </div>
+              <div className={classes.sectionMobile}>
+                <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
+                  <MoreIcon />
+                </IconButton>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <Route exact path="/" render={() => <div>Hello</div>} />
+          <Route path="/user/:username" render={() => <MemberPage />} />
+          <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
+          <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
+          <Drawer
+            variant="persistent"
+            className={classes.drawer}
+            open={open_drawer}
+            onClose={() => { this.setState({ open_drawer: false }) }}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.drawerHeader}>
+              <IconButton onClick={() => { this.setState({ open_drawer: false }) }}>
+                <ChevronLeftIcon />
               </IconButton>
             </div>
-          </Toolbar>
-        </AppBar>
-        <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
-        {Snack(snack_shown, snack_message,
-          "OK", () => this.handleClose("snack_shown"))}
-      </div>
+            <Divider />
+            {memberList}
+          </Drawer>
+          {Snack(snack_shown, snack_message,
+            "OK", () => this.handleClose("snack_shown"))}
+        </div>
+      </BrowserRouter>
     );
   }
 }
+
 
 export default withStyles(styles)(HomePage);

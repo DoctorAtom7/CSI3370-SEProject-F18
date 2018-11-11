@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import { create_account } from '../api/Api'
 
 const styles = theme => ({
 
@@ -47,16 +48,19 @@ class CreateAccount extends Component {
         } else if (stage === 3) {
             if (text === text_two) {
                 if (text.length >= 7) {
-                    this.setState({ stage: 1, text: '', email: '', username: '', password: '', text_two: '' })
-                    this.props.onClose()
-                    this.props.showSnack("Account Created!")
+                    if (create_account(this.state.username, this.state.email, text) === 201) {
+                        this.props.showSnack("Account Created!")
+                        this.setState({ stage: 1, text: '', email: '', username: '', password: '', text_two: '' })
+                        this.props.onClose()
+                    } else {
+                        alert("Account Creation Error!")
+                    }
                 } else {
                     alert("Password too short")
                 }
             } else {
                 alert("Passwords don't match")
             }
-
         }
     }
 
