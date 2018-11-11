@@ -7,19 +7,35 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import { login } from '../api/Api.js'
+import PropTypes from "prop-types";
 
 const styles = theme => ({
 
 })
 
 class CreateAccount extends Component {
+
+    static contextTypes = {
+        router: PropTypes.object
+    }
+    constructor(props, context) {
+        super(props, context);
+    }
     state = { username: '', password: '' }
 
     handleChange = name => event => {
         this.setState({ [name]: event.target.value })
     }
 
-    handleClick = (stage) => {
+    handleClick = async () => {
+        let response = await login(this.state.username, this.state.password)
+        if (response.status === 200) {
+            let token = await response.text()
+            localStorage.setItem('forum-token', token)
+            this.context.router.history.push("/user/" + this.state.username);
+            this.props.onClose()
+        }
 
     }
 
@@ -38,7 +54,7 @@ class CreateAccount extends Component {
                         id="outlined-name"
                         label='Username'
                         type='text'
-                        value={this.state.username}
+                        value={username}
                         className={classes.textField}
                         onChange={this.handleChange('username')}
                         margin="normal"
@@ -49,7 +65,7 @@ class CreateAccount extends Component {
                         id="outlined-password"
                         label='Password'
                         type="password"
-                        value={this.state.password}
+                        value={password}
                         className={classes.textField}
                         onChange={this.handleChange('password')}
                         margin="normal"

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import classNames from 'classnames';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button'
@@ -19,7 +19,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -154,7 +154,7 @@ class HomePage extends Component {
     return (
       <BrowserRouter>
         <div className={classes.root}>
-          <AppBar position="fixed" className={classNames(classes.appBar, {
+          <AppBar position="static" className={classNames(classes.appBar, {
             [classes.appBarShift]: open_drawer,
           })}
           >
@@ -181,8 +181,15 @@ class HomePage extends Component {
                 />
               </div>
               <div className={classes.sectionDesktop}>
-                <Button style={{ marginRight: '20px', color: 'white' }} onClick={() => this.setState({ modal: 'login' })} variant="outlined">Login</Button>
-                <Button variant="contained" color="secondary" onClick={() => this.setState({ modal: 'create' })} >Sign Up</Button>
+                {localStorage.getItem('forum-token') === null &&
+                  <Fragment>
+                    <Button style={{ marginRight: '20px', color: 'white' }} variant="outlined" onClick={() => this.setState({ modal: 'login' })} component={Link} to="/login">Login</Button>
+                    <Button variant="contained" color="secondary" onClick={() => this.setState({ modal: 'create' })} >Sign Up</Button>
+                  </Fragment>
+                }
+                {localStorage.getItem('forum-token') !== null &&
+                  <Button variant="contained" color="secondary" onClick={() => { localStorage.setItem('forum-token', null); window.location.reload() }} >Logout</Button>
+                }
               </div>
               <div className={classes.sectionMobile}>
                 <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
@@ -191,8 +198,10 @@ class HomePage extends Component {
               </div>
             </Toolbar>
           </AppBar>
+          <Route exact path="/" render={() => <div>Hello</div>} />
+          <Route path="/user/:username" render={() => <MemberPage />} />
+          <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
           <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
-          <Login open={modal === 'login'} onClose={this.modalClose} showSnack={this.changeSnack} />
           <Drawer
             variant="persistent"
             className={classes.drawer}
