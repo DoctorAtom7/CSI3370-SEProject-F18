@@ -23,6 +23,10 @@ public class MemberService {
 		return manager.find(Member.class, id);
 	}
 
+	public void createPost(Post post) {
+		manager.persist(post);
+	}
+
 	public Member authMember(String username, String password) {
 		TypedQuery<Member> query = manager.createQuery(
 				"Select m from Member m where m.username = :username and m.password_hash = :password", Member.class);

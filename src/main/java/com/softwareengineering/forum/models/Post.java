@@ -45,6 +45,11 @@ public class Post {
 
     }
 
+    public Post(String textTopic, String textBody) {
+        this.title = textTopic;
+        this.textBody = textBody;
+    }
+
     public Post(String textBody, String textTopic, Member creator) {
         this.textBody = textBody;
         this.title = textTopic;

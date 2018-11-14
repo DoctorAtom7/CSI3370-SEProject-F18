@@ -59,6 +59,25 @@ class MemberController {
 		return member;
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "createPost", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public void createPost(@RequestBody Map<String, String> map) {
+
+		map.forEach((k, v) -> System.out.println(k + "\t" + v));
+
+		Algorithm algorithm = Algorithm.HMAC256(secretKey);
+		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
+		DecodedJWT jwt = verifier.verify(map.get("token"));
+		int id = jwt.getClaim("userID").asInt();
+		String title = map.get("title");
+		String body = map.get("body");
+		Member creator = service.getMemberById(id);
+
+		Post post = new Post(title, body, creator);
+		service.createPost(post);
+
+	}
+
 	@PostMapping(value = "login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String login(@RequestParam Map<String, String> map) {
 		String username = map.get("username");

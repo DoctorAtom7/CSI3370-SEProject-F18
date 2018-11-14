@@ -19,6 +19,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
+import PostEditor from './components/PostEditor';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -188,7 +189,7 @@ class HomePage extends Component {
                   </Fragment>
                 }
                 {localStorage.getItem('forum-token') !== null &&
-                  <Button variant="contained" color="secondary" onClick={() => { localStorage.setItem('forum-token', null); window.location.reload() }} >Logout</Button>
+                  <Button variant="contained" color="secondary" onClick={() => { localStorage.clear(); window.location.reload() }} >Logout</Button>
                 }
               </div>
               <div className={classes.sectionMobile}>
@@ -199,6 +200,7 @@ class HomePage extends Component {
             </Toolbar>
           </AppBar>
           <Route exact path="/" render={() => <div>Hello</div>} />
+          <Route exact path="/createPost" render={() => <PostEditor />} />
           <Route path="/user/:username" render={() => <MemberPage />} />
           <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
           <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
