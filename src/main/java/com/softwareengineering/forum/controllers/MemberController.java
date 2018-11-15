@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -79,15 +80,20 @@ class MemberController {
 	}
 
 	@PostMapping(value = "login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String login(@RequestParam Map<String, String> map) {
+	public ResponseEntity<String> login(@RequestParam Map<String, String> map) {
 		String username = map.get("username");
 		String password = map.get("password");
 		Member member = service.authMember(username, password);
+
+		if (Objects.isNull(member)) {
+			String error = "No user exists with this username/password combo";
+			return new ResponseEntity<String>(error, HttpStatus.UNAUTHORIZED);
+		}
 
 		Algorithm alg = Algorithm.HMAC256(secretKey);
 		String token = JWT.create().withIssuer(issuer).withClaim("username", username)
 				.withClaim("userID", member.getId()).withClaim("is_mod", member.isMod()).sign(alg);
 
-		return token;
+		return new ResponseEntity<String>(token, HttpStatus.OK);
 	}
 }

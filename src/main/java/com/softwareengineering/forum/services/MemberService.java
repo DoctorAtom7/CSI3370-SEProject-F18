@@ -1,6 +1,7 @@
 package com.softwareengineering.forum.services;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
@@ -28,10 +29,15 @@ public class MemberService {
 	}
 
 	public Member authMember(String username, String password) {
-		TypedQuery<Member> query = manager.createQuery(
-				"Select m from Member m where m.username = :username and m.password_hash = :password", Member.class);
-		query.setParameter("username", username);
-		query.setParameter("password", password);
-		return query.getSingleResult();
+		try {
+			TypedQuery<Member> query = manager.createQuery(
+					"Select m from Member m where m.username = :username and m.password_hash = :password",
+					Member.class);
+			query.setParameter("username", username);
+			query.setParameter("password", password);
+			return query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 }
