@@ -200,8 +200,8 @@ class HomePage extends Component {
             </Toolbar>
           </AppBar>
           <Route exact path="/" render={() => <div>Hello</div>} />
-          <Route exact path="/createPost" render={() => <PostEditor />} />
-          <Route path="/user/:username" render={() => <MemberPage />} />
+          <Route exact path="/createPost" render={(props) => <PostEditor {...props} />} />
+          <Route path="/user/:username" render={(props) => <MemberPage {...props} />} />
           <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
           <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
           <Drawer
