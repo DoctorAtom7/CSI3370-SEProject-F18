@@ -37,7 +37,21 @@ const styles = theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
+  mainContent: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
   appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  mainContentShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
@@ -166,7 +180,7 @@ class HomePage extends Component {
                 </IconButton>
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                   Placeholder
-            </Typography>
+                </Typography>
 
               </div>
               <div className={classes.search}>
@@ -199,11 +213,15 @@ class HomePage extends Component {
               </div>
             </Toolbar>
           </AppBar>
-          <Route exact path="/" render={() => <div>Hello</div>} />
-          <Route exact path="/createPost" render={(props) => <PostEditor {...props} />} />
-          <Route path="/user/:username" render={(props) => <MemberPage {...props} />} />
-          <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
-          <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
+          <div className={classNames(classes.mainContent, {
+            [classes.mainContentShift]: open_drawer,
+          })}>
+            <Route exact path="/" render={() => <div>Hello</div>} />
+            <Route exact path="/createPost" render={(props) => <PostEditor {...props} />} />
+            <Route path="/user/:username" render={(props) => <MemberPage {...props} />} />
+            <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
+            <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
+          </div>
           <Drawer
             variant="persistent"
             className={classes.drawer}
