@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -48,16 +49,31 @@ class MemberController {
 		service.createMember(member);
 	}
 
-	@PostMapping(value = "selfInfo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public Member getSelfInfo(@RequestParam Map<String, String> map) {
+	@PostMapping(value = "memberInfo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public Map<String, Object> getMemberInfo(@RequestParam Map<String, String> map) {
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
 		DecodedJWT jwt = verifier.verify(map.get("token"));
-		int id = jwt.getClaim("userID").asInt();
+		String self = jwt.getClaim("username").asString();
+		String name = map.get("username");
 
-		Member member = service.getMemberById(id);
-		member.setPassword(null);
-		return member;
+		Map<String, Object> response = new HashMap<>();
+		Member requestedMember = service.getMemberByUsername(name);
+
+		// User is requesting self info
+		if (self.equals(name)) {
+			requestedMember.setPassword(null);
+			response.put("isSelf", true);
+		} else { // User is another member's info
+			requestedMember.setEmail(null);
+			requestedMember.setPassword(null);
+			response.put("isSelf", false);
+		}
+
+		response.put("member", requestedMember);
+
+		return response;
+
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -76,7 +92,6 @@ class MemberController {
 
 		Post post = new Post(title, body, creator);
 		service.createPost(post);
-
 	}
 
 	@PostMapping(value = "login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

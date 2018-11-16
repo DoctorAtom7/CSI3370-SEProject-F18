@@ -24,6 +24,13 @@ public class MemberService {
 		return manager.find(Member.class, id);
 	}
 
+	public Member getMemberByUsername(String name) {
+		TypedQuery<Member> query = manager.createQuery("select m from Member m where m.username = :username",
+				Member.class);
+		query.setParameter("username", name);
+		return query.getSingleResult();
+	}
+
 	public void createPost(Post post) {
 		manager.persist(post);
 	}

@@ -44,13 +44,13 @@ export const login = async (username, password) => {
     return await response
 }
 
-export const get_self = async () => {
-    const data = { 'token': localStorage.getItem('forum-token') }
+export const get_member = async (member) => {
+    const data = { 'token': localStorage.getItem('forum-token'), 'username': member }
     const formBody = Object.keys(data)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
         .join('&')
     let response = await fetch(
-        '/member/selfInfo',
+        '/member/memberInfo',
         {
             method: 'POST',
             credentials: 'include',

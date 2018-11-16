@@ -34,8 +34,8 @@ class CreateAccount extends Component {
             const normal_text = 'Please enter your username and password'
             const token = await response.text()
             localStorage.setItem('forum-token', token)
-            this.setState({ username: '', password: '', error: false, text: normal_text })
             this.context.router.history.push("/user/" + this.state.username);
+            this.setState({ username: '', password: '', error: false, text: normal_text })
             this.props.onClose()
         } else if (response.status === 401) {
             const error_text = 'Sorry, your password or username was wrong. Please try again'
