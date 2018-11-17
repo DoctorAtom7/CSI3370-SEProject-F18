@@ -27,6 +27,9 @@ public class Post {
     @Column(name = "post_id", nullable = false, unique = true)
     private int postNum;
 
+    @Column(name = "post_like")
+    private int postLike;
+
     @Column(name = "body")
     private String textBody;
 
@@ -101,4 +104,12 @@ public class Post {
         this.member = member;
     }
 
+    //likes
+    public int getLikes() {
+        return postLike;
+    }
+
+    public void setLike(int postLike) {
+        this.postLike = postLike;
+    }
 }
