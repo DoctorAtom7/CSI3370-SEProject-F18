@@ -133,13 +133,13 @@ class MemberController {
 		return new ResponseEntity<List<Post>>(postList, HttpStatus.OK);
 	}
 
-	//liking system endpoint
+	// liking system endpoint
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping("/member/vote")
 	@PostMapping(value = "likePost", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public void likePost(@RequestBody Post post) {
-		service.likePost (post);
+		// service.likePost (post);
 	}
 
 }
