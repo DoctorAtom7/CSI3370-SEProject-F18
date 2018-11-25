@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.List;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -110,5 +112,24 @@ class MemberController {
 				.withClaim("userID", member.getId()).withClaim("is_mod", member.isMod()).sign(alg);
 
 		return new ResponseEntity<String>(token, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "topPosts", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<List<Post>> getTopPosts(@RequestParam Map<String, String> map) {
+		List<Post> postList = null;
+
+		String username = map.get("username");
+
+		System.out.println(username);
+
+		Member member = service.getMemberByUsername(username);
+
+		try {
+			postList = service.getTopPosts(member);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return new ResponseEntity<List<Post>>(postList, HttpStatus.OK);
 	}
 }

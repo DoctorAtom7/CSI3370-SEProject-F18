@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS member(
-	id SERIAL PRIMARY KEY,
+	member_id SERIAL PRIMARY KEY,
 	username VARCHAR(50) UNIQUE NOT NULL,
 	email VARCHAR(255) UNIQUE NOT NULL,
 	verified BOOLEAN DEFAULT 'n',
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS post(
 	post_id SERIAL PRIMARY KEY,
 	title TEXT, 
 	body TEXT,
-	creation_data TIMESTAMP default now(),
-	creator integer references member 
+	creation_date TIMESTAMP default now(),
+	member_id integer references member 
 );
 
