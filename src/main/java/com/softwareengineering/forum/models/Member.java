@@ -22,6 +22,8 @@ public class Member {
 	private String password_hash;
 	@Column(name = "is_moderator")
 	private boolean isMod;
+	@Column(name = "canLike")
+	private boolean canLike;
 
 	public Member() {
 	}
@@ -75,6 +77,14 @@ public class Member {
 
 	public void setIsMod(boolean bool) {
 		isMod = bool;
+	}
+//can like set/get
+	public boolean canLike() {
+		return canLike;
+	}
+
+	public void setLike(boolean bool) {
+		canLike = bool;
 	}
 
 	@Override

@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS post(
 	post_id SERIAL PRIMARY KEY,
 	title TEXT, 
 	body TEXT,
+	post_like DEFAULT 0,
 	creation_date TIMESTAMP default now(),
 	member_id integer references member 
 );
