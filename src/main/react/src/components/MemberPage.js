@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import UserCard from './UserCard';
+import TopUserPost from './TopUserPost'
 import { get_member } from '../api/Api.js'
 
 const styles = theme => ({
@@ -29,7 +30,8 @@ class MemberPage extends Component {
     render() {
         const { username, email, mod, bio, post_list, is_self } = this.state
         return (
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+                {username !== 'loading' && <TopUserPost username={username} />}
                 <UserCard handleChange={this.handleChange} email={email} username={username} bio={bio} is_mod={mod} is_self={is_self} />
             </div>
         )

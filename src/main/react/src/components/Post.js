@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
-import { ListItem } from 'material-ui/List'
-import ArrowDropDown from 'material-ui-icons/ArrowDropDown'
-import ArrowDropUp from 'material-ui-icons/ArrowDropUp'
-import Card, { CardContent, CardHeader } from 'material-ui/Card'
-import Typography from 'material-ui/Typography'
+import Avatar from '@material-ui/core/Avatar';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import IconButton from '@material-ui/core/IconButton';
+import ListItem from '@material-ui/core/ListItem'
+import Typography from '@material-ui/core/Typography'
 
-const styles = () => ({
+import { withStyles } from '@material-ui/core/styles'
+
+const ListItemStyles = {
     listItem: {
         paddingTop: 0,
         paddingBottom: 0,
@@ -31,18 +35,25 @@ const styles = () => ({
         marginRight: 20,
         fontSize: '24px'
     }
-})
+}
 
-class Comment extends Component {
+class Post extends Component {
+
     render() {
-        const { title, id, body, voteCount, handleVote } = this.props
+        let { data } = this.props
+        let style = ListItemStyles
+        const createdAt = new Date(data.date)
+        const date = `${createdAt.getMonth() +
+            1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+
+
         return (
-            <ListItem style={style.listItem} key={idea.id}>
+            <ListItem style={style.listItem} key={data.id}>
                 <Card style={style.card}>
                     <div style={{ width: '100%' }}>
                         <CardHeader
-                            avatar={<Avatar aria-label={idea.category}>{idea.avatar}</Avatar>}
-                            title={title}
+                            avatar={<Avatar aria-label={data.category}>{data.creator.id}</Avatar>}
+                            title={data.title}
                             subheader={date}
                         />
                         <CardContent style={style.cardContent}>
@@ -50,34 +61,29 @@ class Comment extends Component {
                                 style={{
                                     hyphens: 'auto'
                                 }}
-                                component="p"
+                                variant="body1"
                             >
-                                {description}
+                                {data.body}
                             </Typography>
                         </CardContent>
                     </div>
                     <div style={style.voteSection}>
                         <div style={style.voteButtons}>
-                            <IconButton
-                                onClick={() => this.handleVote(id, idea.createdAt, 1)}
-                            >
-                                <ArrowDropUp style={arrowStyle.up} />
+                            <IconButton>
                             </IconButton>
                             <IconButton
-                                onClick={() => this.handleVote(id, idea.createdAt, -1)}
+                                onClick={() => this.handleVote(data.id, data.createdAt, -1)}
                             >
-                                <ArrowDropDown style={arrowStyle.down} />
                             </IconButton>
                         </div>
-                        <Typography component="p" style={style.voteCount}>
-                            {this.state.voteCount}
+                        <Typography variant="body1" style={style.voteCount}>
+                            12
                         </Typography>
                     </div>
                 </Card>
             </ListItem>
         )
     }
-
 }
 
-export default withStyles(styles)(Comment)
+export default Post
