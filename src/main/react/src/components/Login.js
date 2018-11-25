@@ -22,7 +22,7 @@ class CreateAccount extends Component {
     constructor(props, context) {
         super(props, context);
     }
-    state = { username: '', password: '' }
+    state = { text: 'Please enter your username and password', username: '', password: '', error: false }
 
     handleChange = name => event => {
         this.setState({ [name]: event.target.value })
@@ -31,25 +31,33 @@ class CreateAccount extends Component {
     handleClick = async () => {
         let response = await login(this.state.username, this.state.password)
         if (response.status === 200) {
-            let token = await response.text()
+            const normal_text = 'Please enter your username and password'
+            const token = await response.text()
             localStorage.setItem('forum-token', token)
             this.context.router.history.push("/user/" + this.state.username);
+            this.setState({ username: '', password: '', error: false, text: normal_text })
             this.props.onClose()
+        } else if (response.status === 401) {
+            const error_text = 'Sorry, your password or username was wrong. Please try again'
+            this.setState({ password: '', error: true, text: error_text })
+        } else {
+            const error_text = 'Sorry, an unknown error occured. If this persists, please notify site admins'
+            this.setState({ password: '', username: '', text: error_text })
         }
-
     }
 
     render() {
         const { classes, open, onClose } = this.props
-        const { username, password } = this.state
+        const { username, password, error, text } = this.state
         return (
             <Dialog open={open} onClose={() => onClose()}>
                 <DialogTitle>Login</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please enter your username and password
+                        {text}
                     </DialogContentText>
                     <TextField
+                        error={error}
                         style={{ width: '60%' }}
                         id="outlined-name"
                         label='Username'
@@ -61,6 +69,7 @@ class CreateAccount extends Component {
                         variant="outlined"
                     />
                     <TextField
+                        error={error}
                         style={{ width: '60%' }}
                         id="outlined-password"
                         label='Password'

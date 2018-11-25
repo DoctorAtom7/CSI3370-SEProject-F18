@@ -44,13 +44,13 @@ export const login = async (username, password) => {
     return await response
 }
 
-export const get_self = async () => {
-    const data = { 'token': localStorage.getItem('forum-token') }
+export const get_member = async (member) => {
+    const data = { 'token': localStorage.getItem('forum-token'), 'username': member }
     const formBody = Object.keys(data)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
         .join('&')
     let response = await fetch(
-        '/member/selfInfo',
+        '/member/memberInfo',
         {
             method: 'POST',
             credentials: 'include',
@@ -87,4 +87,29 @@ export const create_post = async (title, body) => {
             body: formBody
         }
     )
+}
+
+export const get_top_posts = async (username) => {
+    const data = {
+        username
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/topPosts',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
 }

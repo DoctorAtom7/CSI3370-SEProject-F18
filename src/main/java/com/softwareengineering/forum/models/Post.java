@@ -31,7 +31,7 @@ public class Post {
     private int postLike;
 
     @Column(name = "body")
-    private String textBody;
+    private String body;
 
     @Column(name = "title")
     private String title;
@@ -41,22 +41,22 @@ public class Post {
     private Date creationDate;
 
     @OneToOne
-    @JoinColumn(name = "id")
-    private Member member;
+    @JoinColumn(name = "member_id")
+    private Member member_id;
 
     public Post() {
 
     }
 
-    public Post(String textTopic, String textBody) {
-        this.title = textTopic;
-        this.textBody = textBody;
+    public Post(String title, String body) {
+        this.title = title;
+        this.body = body;
     }
 
-    public Post(String textBody, String textTopic, Member creator) {
-        this.textBody = textBody;
-        this.title = textTopic;
-        this.member = creator;
+    public Post(String body, String title, Member member_id) {
+        this.body = body;
+        this.title = title;
+        this.member_id = member_id;
     }
 
     // postNum
@@ -70,20 +70,20 @@ public class Post {
 
     // textBody
     public String getBody() {
-        return textBody;
+        return body;
     }
 
-    public void setBody(String textBody) {
-        this.textBody = textBody;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     // Topic
-    public String getTopic() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTopic(String textTopic) {
-        this.title = textTopic;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     // date
@@ -97,11 +97,15 @@ public class Post {
 
     // user
     public Member getCreator() {
-        return member;
+        return member_id;
+    }
+
+    public void setCreator(Member member) {
+        this.member_id = member;
     }
 
     public void setUsername(Member member) {
-        this.member = member;
+        this.member_id = member;
     }
 
     //likes

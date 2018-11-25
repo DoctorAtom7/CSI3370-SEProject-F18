@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.List;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -47,16 +51,31 @@ class MemberController {
 		service.createMember(member);
 	}
 
-	@PostMapping(value = "selfInfo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public Member getSelfInfo(@RequestParam Map<String, String> map) {
+	@PostMapping(value = "memberInfo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public Map<String, Object> getMemberInfo(@RequestParam Map<String, String> map) {
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
 		DecodedJWT jwt = verifier.verify(map.get("token"));
-		int id = jwt.getClaim("userID").asInt();
+		String self = jwt.getClaim("username").asString();
+		String name = map.get("username");
 
-		Member member = service.getMemberById(id);
-		member.setPassword(null);
-		return member;
+		Map<String, Object> response = new HashMap<>();
+		Member requestedMember = service.getMemberByUsername(name);
+
+		// User is requesting self info
+		if (self.equals(name)) {
+			requestedMember.setPassword(null);
+			response.put("isSelf", true);
+		} else { // User is another member's info
+			requestedMember.setEmail(null);
+			requestedMember.setPassword(null);
+			response.put("isSelf", false);
+		}
+
+		response.put("member", requestedMember);
+
+		return response;
+
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -75,20 +94,43 @@ class MemberController {
 
 		Post post = new Post(title, body, creator);
 		service.createPost(post);
-
 	}
 
 	@PostMapping(value = "login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String login(@RequestParam Map<String, String> map) {
+	public ResponseEntity<String> login(@RequestParam Map<String, String> map) {
 		String username = map.get("username");
 		String password = map.get("password");
 		Member member = service.authMember(username, password);
+
+		if (Objects.isNull(member)) {
+			String error = "No user exists with this username/password combo";
+			return new ResponseEntity<String>(error, HttpStatus.UNAUTHORIZED);
+		}
 
 		Algorithm alg = Algorithm.HMAC256(secretKey);
 		String token = JWT.create().withIssuer(issuer).withClaim("username", username)
 				.withClaim("userID", member.getId()).withClaim("is_mod", member.isMod()).sign(alg);
 
-		return token;
+		return new ResponseEntity<String>(token, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "topPosts", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ResponseEntity<List<Post>> getTopPosts(@RequestParam Map<String, String> map) {
+		List<Post> postList = null;
+
+		String username = map.get("username");
+
+		System.out.println(username);
+
+		Member member = service.getMemberByUsername(username);
+
+		try {
+			postList = service.getTopPosts(member);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return new ResponseEntity<List<Post>>(postList, HttpStatus.OK);
 	}
 
 	//liking system endpoint
