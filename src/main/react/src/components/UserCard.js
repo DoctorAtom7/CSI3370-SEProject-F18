@@ -18,7 +18,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     card: {
-        maxWidth: 345,
+        width: 400,
         margin: 15
     },
     media: {
@@ -134,7 +134,7 @@ class UserCard extends Component {
                         </Typography>
 
                     </div>
-                    <Typography component="p">
+                    <Typography variant="body1">
                         {bio}
                     </Typography>
                     {is_mod &&
