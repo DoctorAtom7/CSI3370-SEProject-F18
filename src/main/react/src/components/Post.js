@@ -77,7 +77,7 @@ class Post extends Component {
                             </IconButton>
                         </div>
                         <Typography variant="body1" style={style.voteCount}>
-                            12
+                            {data.likes}
                         </Typography>
                     </div>
                 </Card>

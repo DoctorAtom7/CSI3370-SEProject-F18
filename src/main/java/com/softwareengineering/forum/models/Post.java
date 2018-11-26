@@ -10,7 +10,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import lombok.Data;
 //requirements:
 // 1.int to hold post num
 // 2. String for body
@@ -18,6 +18,7 @@ import javax.persistence.TemporalType;
 // 4. date of creation
 //5. user that posted
 
+@Data
 @Entity
 @Table(name = "post")
 public class Post {
@@ -25,7 +26,7 @@ public class Post {
     @GeneratedValue
 
     @Column(name = "post_id", nullable = false, unique = true)
-    private int postNum;
+    private int postId;
 
     @Column(name = "post_like")
     private int postLike;
@@ -42,7 +43,7 @@ public class Post {
 
     @OneToOne
     @JoinColumn(name = "member_id")
-    private Member member_id;
+    private Member creator;
 
     public Post() {
 
@@ -56,64 +57,7 @@ public class Post {
     public Post(String body, String title, Member member_id) {
         this.body = body;
         this.title = title;
-        this.member_id = member_id;
+        this.creator = member_id;
     }
 
-    // postNum
-    public int getNum() {
-        return postNum;
-    }
-
-    public void setNum(int postNum) {
-        this.postNum = postNum;
-    }
-
-    // textBody
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    // Topic
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    // date
-    public Date getDate() {
-        return creationDate;
-    }
-
-    public void setDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    // user
-    public Member getCreator() {
-        return member_id;
-    }
-
-    public void setCreator(Member member) {
-        this.member_id = member;
-    }
-
-    public void setUsername(Member member) {
-        this.member_id = member;
-    }
-
-    //likes
-    public int getLikes() {
-        return postLike;
-    }
-
-    public void setLike(int postLike) {
-        this.postLike = postLike;
-    }
 }

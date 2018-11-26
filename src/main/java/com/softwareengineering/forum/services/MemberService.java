@@ -59,7 +59,7 @@ public class MemberService {
 
 		Member displayedMember = new Member();
 		displayedMember.setUsername(member.getUsername());
-		displayedMember.setIsMod(member.isMod());
+		displayedMember.setMod(member.isMod());
 		displayedMember.setId(member.getId());
 
 		postList.forEach((post) -> {
@@ -67,5 +67,11 @@ public class MemberService {
 		});
 
 		return postList;
+	}
+
+	public List<Post> getAllPosts(int limit) {
+		Query q = manager.createQuery("select p from Post p order by like_count limit :limit");
+		q.setParameter("limit", limit);
+		return q.getResultList();
 	}
 }

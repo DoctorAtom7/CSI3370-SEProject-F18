@@ -22,7 +22,7 @@ class TopUserPost extends Component {
         let items = []
         console.log('posts:', posts)
         posts.forEach(element => {
-            items.push(<Post data={element} key={element.num}></Post>)
+            items.push(<Post data={element} key={element.id}></Post>)
         })
 
         return items

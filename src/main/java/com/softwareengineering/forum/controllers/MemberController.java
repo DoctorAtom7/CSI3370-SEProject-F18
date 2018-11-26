@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -64,11 +63,11 @@ class MemberController {
 
 		// User is requesting self info
 		if (self.equals(name)) {
-			requestedMember.setPassword(null);
+			requestedMember.setPasswordHash(null);
 			response.put("isSelf", true);
 		} else { // User is another member's info
 			requestedMember.setEmail(null);
-			requestedMember.setPassword(null);
+			requestedMember.setPasswordHash(null);
 			response.put("isSelf", false);
 		}
 

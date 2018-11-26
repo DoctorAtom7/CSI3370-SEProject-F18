@@ -6,7 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "member")
 public class Member {
@@ -19,11 +21,9 @@ public class Member {
 	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 	@Column(name = "password_hash", nullable = false)
-	private String password_hash;
+	private String passwordHash;
 	@Column(name = "is_moderator")
 	private boolean isMod;
-	@Column(name = "canLike")
-	private boolean canLike;
 
 	public Member() {
 	}
@@ -39,56 +39,8 @@ public class Member {
 		this.email = email;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return this.password_hash;
-	}
-
-	public void setPassword(String password) {
-		this.password_hash = password;
-	}
-
-	public boolean isMod() {
-		return isMod;
-	}
-
-	public void setIsMod(boolean bool) {
-		isMod = bool;
-	}
-//can like set/get
-	public boolean canLike() {
-		return canLike;
-	}
-
-	public void setLike(boolean bool) {
-		canLike = bool;
-	}
-
 	@Override
 	public String toString() {
-		return ("Email:\t" + this.email + "\nUsername:\t" + this.username + "\nPassword:\t" + this.password_hash);
+		return ("Email:\t" + this.email + "\nUsername:\t" + this.username + "\nPassword:\t" + this.passwordHash);
 	}
 }
