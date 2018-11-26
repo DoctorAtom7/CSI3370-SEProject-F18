@@ -3,7 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Slide from '@material-ui/core/Slide';
-import { create_post } from '../api/Api.js'
+import { create_post, submit_edited_post } from '../api/Api.js'
 import { create } from 'jss';
 
 const styles = {
@@ -33,8 +33,13 @@ class PostEditor extends Component {
         })
     }
     handleClick = async () => {
-        const b = await create_post(this.state.title, this.state.text)
-        console.log(b)
+        if (this.props.type === 'create') {
+            const b = await create_post(this.state.title, this.state.text)
+            console.log(b)
+        } else if (this.props.type === 'edit') {
+            const b = await submit_edited_post(this.state.title, this.state.text, this.props.postId)
+            console.log(b)
+        }
     }
 
     render() {

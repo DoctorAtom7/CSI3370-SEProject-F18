@@ -218,7 +218,7 @@ class App extends Component {
             [classes.mainContentShift]: open_drawer,
           })}>
             <Route exact path="/" render={(props) => <HomePage {...props} />} />
-            <Route exact path="/createPost" render={(props) => <PostEditor {...props} />} />
+            <Route exact path="/createPost" render={(props) => <PostEditor type='create' {...props} />} />
             <Route path="/user/:username" render={(props) => <MemberPage {...props} />} />
             <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
             <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />

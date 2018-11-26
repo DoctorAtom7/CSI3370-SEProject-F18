@@ -89,7 +89,6 @@ class Post extends Component {
                                 <IconButton>
                                 </IconButton>
                                 <IconButton
-                                    onClick={() => this.handleVote(data.id, data.createdAt, -1)}
                                 >
                                 </IconButton>
                             </div>
@@ -105,10 +104,10 @@ class Post extends Component {
                         <IconButton>
                             <FlagIcon />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={() => this.props.edit_post(data.title, data.body, data.postId)}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={() => this.props.handle_vote(data.postId)}>
                             <ThumbOutlined />
                         </IconButton>
                         <IconButton>

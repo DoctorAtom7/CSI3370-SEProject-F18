@@ -89,6 +89,32 @@ export const create_post = async (title, body) => {
     )
 }
 
+export const submit_edited_post = async (title, body, id) => {
+    const data = {
+        'title': title,
+        'body': body,
+        'postId': id,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/editPost',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        }
+    )
+}
+
 export const get_top_posts = async (username) => {
     const data = {
         username

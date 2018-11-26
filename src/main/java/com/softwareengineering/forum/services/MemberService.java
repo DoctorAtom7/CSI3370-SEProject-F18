@@ -31,7 +31,7 @@ public class MemberService implements IMemberService {
 
 	public void createPost(Post post) {
 		String sql = "insert into post (title, body, member_id) values (?, ?, ?)";
-		template.update(sql, post.getTitle(), post.getBody(), post.getCreator());
+		template.update(sql, post.getTitle(), post.getBody(), post.getCreator().getId());
 	}
 
 	public Member authMember(String username, String password) {
@@ -63,7 +63,7 @@ public class MemberService implements IMemberService {
 	}
 
 	public List<Post> getAllPosts(int limit) {
-		String sql = "select * from post order by post_like limit ?";
+		String sql = "select * from post order by post_like desc limit ?";
 		List<Post> postList = template.query(sql, Post.mapper, limit);
 
 		postList.forEach((post) -> {
@@ -71,5 +71,15 @@ public class MemberService implements IMemberService {
 		});
 
 		return postList;
+	}
+
+	public void likePost(Post post) {
+		String sql = "update post set post_like = ? where post_id = ?";
+		template.update(sql, post.getPostLike() + 1, post.getPostId());
+	}
+
+	public void editPost(String title, String body, String id) {
+		String sql = "update post set title = ?, body = ? where post_id = ?";
+		template.update(sql, title, body, Integer.valueOf(id));
 	}
 }

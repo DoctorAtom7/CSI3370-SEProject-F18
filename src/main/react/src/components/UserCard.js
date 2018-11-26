@@ -19,7 +19,12 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
     card: {
         width: 400,
-        margin: 15
+        maxHeight: 350,
+        margin: 15,
+    },
+    expandedCard: {
+        width: 400,
+        margin: 15,
     },
     media: {
         objectFit: 'cover',
@@ -111,14 +116,16 @@ class UserCard extends Component {
     render() {
         const { username, bio, image, is_mod, classes, is_self, email } = this.props
         const { open, expandOpen } = this.state
-
         let imgurl = image
         if (imgurl === null || imgurl === undefined) {
             imgurl = 'https://upload.wikimedia.org/wikipedia/commons/1/17/Aquarius_Proprius_4_Orange-Blue_%287251980240%29.jpg'
         }
 
+        let cardRoot = classes.card
+        if (this.state.expanded) { cardRoot = classes.expandedCard }
+
         return (
-            <Card className={classes.card}>
+            <Card className={cardRoot}>
                 <CardMedia
                     component="img"
                     alt="User banner picture"

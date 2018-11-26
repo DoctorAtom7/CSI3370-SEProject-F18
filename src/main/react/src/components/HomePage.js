@@ -30,6 +30,19 @@ class HomePage extends Component {
         })
     }
 
+    handle_up_vote = (id) => {
+        let postArray = this.state.posts
+
+        for (let i = 0; i < postArray.length; i++) {
+            if (postArray[i].postId === id && !postArray[i].voted) {
+                postArray[i].postLike += 1
+                postArray[i].voted = true
+            }
+        }
+
+        this.setState({ posts: postArray })
+    }
+
     get_list = () => {
         const { posts } = this.state
         if (posts === null || posts === undefined || posts.length === 0) {
@@ -48,7 +61,7 @@ class HomePage extends Component {
         let items = []
         console.log('posts:', posts)
         posts.forEach(element => {
-            items.push(<Post data={element} key={element.id}></Post>)
+            items.push(<Post data={element} handle_vote={this.handle_up_vote} key={element.postId}></Post>)
         })
 
         return items
