@@ -72,4 +72,14 @@ public class MemberService implements IMemberService {
 
 		return postList;
 	}
+
+	public void updateEmail(String username, String email) {
+		String sql = "update member set email = ? where username = ?";
+		template.update(sql, email, username);
+	}
+
+	public void updatePassword(String username, String password) {
+		String sql = "update member set password_hash = ? where username = ?";
+		template.update(sql, email, username);
+	}
 }

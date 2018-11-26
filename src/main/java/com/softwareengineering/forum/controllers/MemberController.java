@@ -78,6 +78,21 @@ class MemberController {
 
 	}
 
+	private Member getMemberByJWT(String jwt) {
+		Algorithm algorithm = Algorithm.HMAC256(secretKey);
+		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
+		try {
+			DecodedJWT jwt = verifier.verify(jwt);
+			int id jwt.getClaim("userID").asString();
+			Member member = service.getMemberById(id);
+			return member;
+		}
+		catch (Exception e) {
+			return null;
+		}
+
+	}
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "createPost", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public void createPost(@RequestBody Map<String, String> map) {
@@ -142,4 +157,19 @@ class MemberController {
 		// service.likePost (post);
 	}
 
+	public void updateEmail(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		String email = map.get("email");
+		if(member.passwordHash == map.get("oldPassword")) {
+			service.updateEmail(username, email);
+		}
+	}
+
+	public updatePassword(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		String password = map.get("newPassword");
+		if(member.passwordHash == map.get("oldPassword")) {
+			service.updateEmail(username, password);
+		}
+	}
 }
