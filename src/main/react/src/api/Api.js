@@ -113,3 +113,18 @@ export const get_top_posts = async (username) => {
 
     return await response.json()
 }
+
+export const home_posts = async () => {
+    let response = await fetch(
+        '/post/topPosts',
+        {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            }
+        }
+    )
+    return await response.json()
+}

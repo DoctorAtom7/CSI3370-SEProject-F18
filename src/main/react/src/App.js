@@ -20,6 +20,7 @@ import { withStyles } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 import PostEditor from './components/PostEditor';
+import HomePage from './components/HomePage'
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -139,7 +140,7 @@ const styles = theme => ({
 });
 
 
-class HomePage extends Component {
+class App extends Component {
 
   state = {
     logged_in: false,
@@ -179,7 +180,7 @@ class HomePage extends Component {
                   <MenuIcon />
                 </IconButton>
                 <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                  Placeholder
+                  FreeReign
                 </Typography>
 
               </div>
@@ -216,7 +217,7 @@ class HomePage extends Component {
           <div className={classNames(classes.mainContent, {
             [classes.mainContentShift]: open_drawer,
           })}>
-            <Route exact path="/" render={() => <div>Hello</div>} />
+            <Route exact path="/" render={(props) => <HomePage {...props} />} />
             <Route exact path="/createPost" render={(props) => <PostEditor {...props} />} />
             <Route path="/user/:username" render={(props) => <MemberPage {...props} />} />
             <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
@@ -248,4 +249,4 @@ class HomePage extends Component {
 }
 
 
-export default withStyles(styles)(HomePage);
+export default withStyles(styles)(App);

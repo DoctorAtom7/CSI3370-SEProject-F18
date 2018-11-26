@@ -28,6 +28,7 @@ class TopUserPost extends Component {
         return items
     }
 
+
     render() {
         return (
             <List style={{ width: '60%', margin: 15 }}>
