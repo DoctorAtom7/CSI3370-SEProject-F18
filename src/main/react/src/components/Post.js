@@ -1,4 +1,9 @@
 import React, { Component } from 'react'
+import EditIcon from '@material-ui/icons/Edit'
+import FlagIcon from '@material-ui/icons/Flag'
+import ThumbOutlined from '@material-ui/icons/ThumbUpOutlined'
+import Thumb from '@material-ui/icons/ThumbUp'
+import Delete from '@material-ui/icons/Delete'
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -19,6 +24,11 @@ const ListItemStyles = {
         display: 'flex',
         flex: 1
     },
+    cardRoot: {
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1
+    },
     cardContent: {
         paddingLeft: '18px'
     },
@@ -34,6 +44,11 @@ const ListItemStyles = {
     voteCount: {
         marginRight: 20,
         fontSize: '24px'
+    },
+    buttonRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
     }
 }
 
@@ -49,36 +64,52 @@ class Post extends Component {
 
         return (
             <ListItem style={style.listItem} key={data.id}>
-                <Card style={style.card}>
-                    <div style={{ width: '100%' }}>
-                        <CardHeader
-                            avatar={<Avatar aria-label={data.category}>{data.creator.id}</Avatar>}
-                            title={data.title}
-                            subheader={date}
-                        />
-                        <CardContent style={style.cardContent}>
-                            <Typography
-                                style={{
-                                    hyphens: 'auto'
-                                }}
-                                variant="body1"
-                            >
-                                {data.body}
-                            </Typography>
-                        </CardContent>
-                    </div>
-                    <div style={style.voteSection}>
-                        <div style={style.voteButtons}>
-                            <IconButton>
-                            </IconButton>
-                            <IconButton
-                                onClick={() => this.handleVote(data.id, data.createdAt, -1)}
-                            >
-                            </IconButton>
+                <Card style={style.cardRoot}>
+                    <div style={style.card}>
+                        <div style={{ width: '100%' }}>
+                            <CardHeader
+                                avatar={<Avatar aria-label={data.category}>{data.creator.id}</Avatar>}
+                                title={data.title}
+                                subheader={date}
+                            />
+                            <CardContent style={style.cardContent}>
+                                <Typography
+                                    style={{
+                                        hyphens: 'auto'
+                                    }}
+                                    variant="body1"
+                                >
+                                    {data.body}
+                                </Typography>
+                            </CardContent>
                         </div>
-                        <Typography variant="body1" style={style.voteCount}>
-                            {data.likes}
-                        </Typography>
+                        <div style={style.voteSection}>
+                            <div style={style.voteButtons}>
+                                <IconButton>
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => this.handleVote(data.id, data.createdAt, -1)}
+                                >
+                                </IconButton>
+                            </div>
+                            <Typography variant="body1" style={style.voteCount}>
+                                {data.postLike}
+                            </Typography>
+                        </div>
+                    </div>
+                    <div style={style.buttonRow}>
+                        <IconButton>
+                            <FlagIcon />
+                        </IconButton>
+                        <IconButton>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton>
+                            <ThumbOutlined />
+                        </IconButton>
+                        <IconButton>
+                            <Delete />
+                        </IconButton>
                     </div>
                 </Card>
             </ListItem>
