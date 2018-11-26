@@ -1,27 +1,11 @@
 package com.softwareengineering.forum.models;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-@Entity
-@Table(name = "password")
 public class Password {
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
 	private int member_id;
-	@Column(name = "password", nullable = false)
 	private String password;
-	@Column(name = "salt", nullable = false)
 	private String salt;
-	@Column(name = "change_date", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date change_date;
 
 	public int getMemberId() {

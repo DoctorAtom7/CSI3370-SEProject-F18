@@ -1,61 +1,54 @@
 package com.softwareengineering.forum.services;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
-
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 
 import com.softwareengineering.forum.models.*;
 
-@Repository
-@Transactional
-public class MemberService {
-	@PersistenceContext
-	private EntityManager manager;
+@Service
+public class MemberService implements IMemberService {
+
+	@Autowired
+	private JdbcTemplate template;
 
 	public void createMember(Member member) {
-		manager.persist(member);
+		String sql = "insert into member (username, email, password_hash, banner_url) values (?, ?, ?, ?)";
+		template.update(sql, member.getUsername(), member.getEmail(), member.getPasswordHash(), member.getBannerUrl());
 	}
 
 	public Member getMemberById(int id) {
-		return manager.find(Member.class, id);
+		String sql = "select * from member where member_id = ?";
+		return template.query(sql, Member.mapper, new Object[] { id }).get(0);
 	}
 
 	public Member getMemberByUsername(String name) {
-		TypedQuery<Member> query = manager.createQuery("select m from Member m where m.username = :username",
-				Member.class);
-		query.setParameter("username", name);
-		return query.getSingleResult();
+		String sql = "select * from member where username = ?";
+		return template.query(sql, Member.mapper, new Object[] { name }).get(0);
 	}
 
 	public void createPost(Post post) {
-		manager.persist(post);
+		String sql = "insert into post (title, body, member_id) values (?, ?, ?)";
+		template.update(sql, post.getTitle(), post.getBody(), post.getCreator());
 	}
 
 	public Member authMember(String username, String password) {
+		String sql = "select * from member where username = ? and password_hash = ?";
+		System.out.println(username + "\t" + password);
 		try {
-			TypedQuery<Member> query = manager.createQuery(
-					"Select m from Member m where m.username = :username and m.password_hash = :password",
-					Member.class);
-			query.setParameter("username", username);
-			query.setParameter("password", password);
-			return query.getSingleResult();
-		} catch (NoResultException e) {
+			return template.query(sql, Member.mapper, new Object[] { username, password }).get(0);
+		} catch (Exception e) {
+			System.out.println(e);
 			return null;
 		}
 	}
 
 	public List<Post> getTopPosts(Member member) {
 		// select p from Post where p.member = :member order by like_count
-		Query q = manager.createQuery("select p from Post p where p.member_id = :member");
-		q.setParameter("member", member);
-		List<Post> postList = q.getResultList();
+		String sql = "select * from post where member_id = ? order by post_like";
+		List<Post> postList = template.query(sql, Post.mapper, member.getId());
 
 		Member displayedMember = new Member();
 		displayedMember.setUsername(member.getUsername());
@@ -70,8 +63,13 @@ public class MemberService {
 	}
 
 	public List<Post> getAllPosts(int limit) {
-		Query q = manager.createQuery("select p from Post p order by like_count limit :limit");
-		q.setParameter("limit", limit);
-		return q.getResultList();
+		String sql = "select * from post order by post_like limit ?";
+		List<Post> postList = template.query(sql, Post.mapper, limit);
+
+		postList.forEach((post) -> {
+			post.setCreator(getMemberById(post.getMemberId()));
+		});
+
+		return postList;
 	}
 }

@@ -23,8 +23,9 @@ import java.util.List;
 @RestController
 public class HomeController {
   public static String upDir = System.getProperty("user.dir") + "/uploads";
+
   @Autowired
-  MemberService service;
+  IMemberService service;
 
   @RequestMapping(value = "/")
   public String index() {

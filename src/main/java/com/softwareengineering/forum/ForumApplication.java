@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import java.io.File;
 
 @SpringBootApplication
-@ComponentScan({ "com.softwareengineering.forum", "controllers" })
+@ComponentScan({ "com.softwareengineering.forum" })
 public class ForumApplication {
 
 	public static void main(String[] args) {

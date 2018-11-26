@@ -1,15 +1,9 @@
 package com.softwareengineering.forum.models;
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import org.springframework.jdbc.core.RowMapper;
+
 import lombok.Data;
 //requirements:
 // 1.int to hold post num
@@ -19,30 +13,13 @@ import lombok.Data;
 //5. user that posted
 
 @Data
-@Entity
-@Table(name = "post")
 public class Post {
-    @Id
-    @GeneratedValue
-
-    @Column(name = "post_id", nullable = false, unique = true)
     private int postId;
-
-    @Column(name = "post_like")
     private int postLike;
-
-    @Column(name = "body")
     private String body;
-
-    @Column(name = "title")
     private String title;
-
-    @Column(name = "creation_date", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-
-    @OneToOne
-    @JoinColumn(name = "member_id")
+    private int memberId;
     private Member creator;
 
     public Post() {
@@ -54,10 +31,30 @@ public class Post {
         this.body = body;
     }
 
-    public Post(String body, String title, Member member_id) {
+    public Post(String body, String title, int member_id) {
         this.body = body;
         this.title = title;
-        this.creator = member_id;
+        this.memberId = member_id;
     }
+
+    public Post(String body, String title, Member creator) {
+        this.body = body;
+        this.title = title;
+        this.creator = creator;
+    }
+
+    public Post(int id, String title, String body, int likes, Date creation, int member) {
+        this.postId = id;
+        this.title = title;
+        this.body = body;
+        this.postLike = likes;
+        this.creationDate = creation;
+        this.memberId = member;
+    }
+
+    public static RowMapper<Post> mapper = (rs, rowNum) -> {
+        return new Post(rs.getInt("post_id"), rs.getString("title"), rs.getString("body"), rs.getInt("post_like"),
+                rs.getTimestamp("creation_date"), rs.getInt("member_id"));
+    };
 
 }

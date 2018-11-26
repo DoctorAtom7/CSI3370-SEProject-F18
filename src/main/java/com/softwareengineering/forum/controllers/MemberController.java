@@ -54,6 +54,7 @@ class MemberController {
 	public Map<String, Object> getMemberInfo(@RequestParam Map<String, String> map) {
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
+		System.out.println(map.get("token"));
 		DecodedJWT jwt = verifier.verify(map.get("token"));
 		String self = jwt.getClaim("username").asString();
 		String name = map.get("username");
