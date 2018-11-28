@@ -15,6 +15,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import { post_comment } from '../api/Api.js'
 
 import {view_thread} from '../api/Api.js'
 
@@ -39,13 +40,14 @@ const styles = {
 };
 
 class Thread extends Component {
-  state = {id: 23, title: '', body: '', likes: '', comments: [], text: '', loading: true}
+  state = {parent_id: 23, title: '', body: '', postLike: '', memberId: '', creationDate: '', children: [], text: '', loading: true}
 
   componentDidMount(){
     view_thread(this.props.match.params.id).then(data => {
-      console.log(data)
-    }).then(() => {
-      this.setState({loading: false})
+      const parent_id = data.postId
+      data.postId = data.parent_id
+      data.loading = false
+      this.setState(data)
     })
   }
 
@@ -55,9 +57,10 @@ class Thread extends Component {
       })
   }
 
-  submit_comment = (id) => {
-
-
+  submit_comment = (parent_id) => {
+    post_comment(parent_id).then(data => {
+      console.log(data)
+    })
   }
 
 
@@ -75,8 +78,11 @@ class Thread extends Component {
   }
 
   render(){
-    let data = {title: 'hello', body: 'test', date: '1/2/3', creator: 1}
-    const {loading} = this.state
+    const {parent_id, title, body, creationDate, creator, loading} = this.state
+
+    const createdAt = new Date(creationDate)
+    const date = `${createdAt.getMonth() +
+        1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
 
     if (loading) {
       return <div>Loading</div>
@@ -85,9 +91,9 @@ class Thread extends Component {
     return(
       <Card>
         <CardHeader
-            avatar={<Avatar aria-label={data.category}>{data.creator}</Avatar>}
-            title={data.title}
-            subheader={data.date}
+            avatar={<Avatar>{creator}</Avatar>}
+            title={title}
+            subheader={date}
         />
         <CardContent >
             <Typography
@@ -96,7 +102,7 @@ class Thread extends Component {
                 }}
                 variant="h6"
             >
-                {data.body}
+                {body}
             </Typography>
         </CardContent>
         <div style={styles.editorRoot}>
@@ -115,16 +121,16 @@ class Thread extends Component {
               <IconButton>
                   <FlagIcon />
               </IconButton>
-              <IconButton onClick={() => this.props.edit_post(data.title, data.body, data.postId)}>
+              <IconButton onClick={() => this.props.edit_post(title, body, parent_id)}>
                   <EditIcon />
               </IconButton>
-              <IconButton onClick={() => this.props.handle_vote(data.postId)}>
+              <IconButton onClick={() => this.props.handle_vote(parent_id)}>
                   <ThumbOutlined />
               </IconButton>
               <IconButton>
                   <Delete />
               </IconButton>
-              <Button variant="contained" style={styles.button} color='primary' onClick={this.handleClick}>
+              <Button variant="contained" style={styles.button} color='primary' onClick={() => this.submit_comment(parent_id)}>
                   Comment
               </Button>
             </div>

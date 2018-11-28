@@ -195,3 +195,30 @@ export const view_thread = async (post_id) => {
 
     return await response.json()
 }
+
+export const post_comment = async (parent_id, body) => {
+    const data = {
+        parent_id,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/add_comment', 
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+
+}
