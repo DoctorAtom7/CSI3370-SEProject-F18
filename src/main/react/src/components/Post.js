@@ -3,6 +3,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import FlagIcon from '@material-ui/icons/Flag'
 import ThumbOutlined from '@material-ui/icons/ThumbUpOutlined'
 import Thumb from '@material-ui/icons/ThumbUp'
+import Comment from '@material-ui/icons/Comment'
 import Delete from '@material-ui/icons/Delete'
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
@@ -57,7 +58,7 @@ class Post extends Component {
     render() {
         let { data } = this.props
         let style = ListItemStyles
-        const createdAt = new Date(data.date)
+        const createdAt = new Date(data.creationDate)
         const date = `${createdAt.getMonth() +
             1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
 
@@ -88,7 +89,6 @@ class Post extends Component {
                                 <IconButton>
                                 </IconButton>
                                 <IconButton
-                                    onClick={() => this.handleVote(data.id, data.createdAt, -1)}
                                 >
                                 </IconButton>
                             </div>
@@ -99,12 +99,15 @@ class Post extends Component {
                     </div>
                     <div style={style.buttonRow}>
                         <IconButton>
+                            <Comment />
+                        </IconButton>
+                        <IconButton>
                             <FlagIcon />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={() => this.props.edit_post(data.title, data.body, data.postId)}>
                             <EditIcon />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={() => this.props.handle_vote(data.postId)}>
                             <ThumbOutlined />
                         </IconButton>
                         <IconButton>

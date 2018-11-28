@@ -1,5 +1,6 @@
 package com.softwareengineering.forum.controllers;
 
+import org.apache.naming.java.javaURLContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -94,8 +95,8 @@ class MemberController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "createPost", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public void createPost(@RequestBody Map<String, String> map) {
+	@PostMapping(value = "createPost")
+	public void createPost(@RequestParam Map<String, String> map) {
 
 		map.forEach((k, v) -> System.out.println(k + "\t" + v));
 
@@ -151,10 +152,22 @@ class MemberController {
 	// liking system endpoint
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping("/member/vote")
-	@PostMapping(value = "likePost", consumes = { MediaType.APPLICATION_JSON_VALUE })
+	@PostMapping(value = "like", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public void likePost(@RequestBody Post post) {
-		// service.likePost (post);
+		// Validate first
+		service.likePost(post);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "editPost", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void editPost(@RequestParam Map<String, String> map) {
+		// Validate first
+
+		String title = map.get("title");
+		String body = map.get("body");
+		String id = map.get("postId");
+
+		service.editPost(title, body, id);
 	}
 
 	public void updateEmail(@RequestParam Map<String, String> map) {
