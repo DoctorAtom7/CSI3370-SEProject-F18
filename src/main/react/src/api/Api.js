@@ -199,6 +199,7 @@ export const view_thread = async (post_id) => {
 export const post_comment = async (parent_id, body) => {
     const data = {
         parent_id,
+        body,
         token: localStorage.getItem('forum-token')
     }
 

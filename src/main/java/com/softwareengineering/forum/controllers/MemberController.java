@@ -153,6 +153,8 @@ class MemberController {
 		service.editPost(title, body, id);
 	}
 
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "updateEmail", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public void updateEmail(@RequestParam Map<String, String> map) {
 		Member member = getMemberByJWT(map.get("token"));
 		String email = map.get("email");
@@ -161,6 +163,8 @@ class MemberController {
 		}
 	}
 
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping(value = "updatePassword", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public void updatePassword(@RequestParam Map<String, String> map) {
 		Member member = getMemberByJWT(map.get("token"));
 		String password = map.get("newPassword");
@@ -168,4 +172,21 @@ class MemberController {
 			service.updateEmail(member.getUsername(), password);
 		}
 	}
+
+	@PostMapping(value = "add_comment", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+	public void addComment(@RequestParam Map<String, String> map){ 
+		Member member = getMemberByJWT(map.get("token"));
+		String body = map.get("body");
+
+		System.out.println(body);
+
+		int parentId = Integer.valueOf(map.get("parent_id"));
+
+		Post post = new Post();
+		post.setBody(body);
+		post.setMemberId(member.getId());
+		
+		service.createComment(post, parentId);
+	}
+
 }

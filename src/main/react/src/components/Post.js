@@ -68,7 +68,7 @@ class Post extends Component {
                     <div style={style.card}>
                         <div style={{ width: '100%' }}>
                             <CardHeader
-                                avatar={<Avatar aria-label={data.category}>{data.creator.id}</Avatar>}
+                                avatar={<Avatar aria-label={data.category}>H</Avatar>}
                                 title={data.title}
                                 subheader={date}
                             />

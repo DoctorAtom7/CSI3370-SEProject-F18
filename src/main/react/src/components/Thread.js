@@ -18,6 +18,7 @@ import CardContent from '@material-ui/core/CardContent';
 import { post_comment } from '../api/Api.js'
 
 import {view_thread} from '../api/Api.js'
+import { List } from '@material-ui/core';
 
 const styles = {
     editorRoot: {
@@ -40,12 +41,11 @@ const styles = {
 };
 
 class Thread extends Component {
-  state = {parent_id: 23, title: '', body: '', postLike: '', memberId: '', creationDate: '', children: [], text: '', loading: true}
+  state = {parent_id: '', title: '', body: '', postLike: '', memberId: '', creationDate: '', children: [], text: '', loading: true}
 
   componentDidMount(){
     view_thread(this.props.match.params.id).then(data => {
-      const parent_id = data.postId
-      data.postId = data.parent_id
+      data.parent_id = data.postId
       data.loading = false
       this.setState(data)
     })
@@ -58,15 +58,15 @@ class Thread extends Component {
   }
 
   submit_comment = (parent_id) => {
-    post_comment(parent_id).then(data => {
+    post_comment(parent_id, this.state.text).then(data => {
       console.log(data)
     })
   }
 
 
   render_comments = () => {
-    let comment_block
-    const comments = this.state.comments
+    let comment_block = []
+    const comments = this.state.children
 
     if (comments.length > 0){
       comments.forEach(element => {
@@ -136,6 +136,9 @@ class Thread extends Component {
             </div>
             <Divider/>
         </div>
+        <List>
+          {this.render_comments()}
+        </List>
       </Card>
     )
   }

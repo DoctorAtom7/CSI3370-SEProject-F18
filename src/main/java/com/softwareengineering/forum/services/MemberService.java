@@ -39,6 +39,11 @@ public class MemberService implements IMemberService {
 		template.update(sql, post.getTitle(), post.getBody(), post.getCreator().getId());
 	}
 
+	public void createComment(Post post, int parentId) {
+		String sql = "insert into post (body, member_id, parent_id) values (?, ?, ?)";
+		template.update(sql, post.getBody(), post.getMemberId(), parentId);
+	}
+
 	public Member authMember(String username, String password) {
 		String sql = "select * from member where username = ? and password_hash = ?";
 		System.out.println(username + "\t" + password);
@@ -107,14 +112,12 @@ public class MemberService implements IMemberService {
 
 	public List<Post> getChildren(int parent_id){
 		String sql = "select * from post where parent_id = ?";
-		System.out.println("About to query....");
 		return template.query(sql, new Object[] {parent_id}, Post.mapper);
 	}
 
 	public Post getAllComments(Post post) {
 		post.setChildren(getChildren(post.getPostId()));
 
-		System.out.println("ERROR! We got here");
 
 		if (post.getChildren().size() > 0){
 			post.getChildren().forEach(child -> {
@@ -122,9 +125,8 @@ public class MemberService implements IMemberService {
 			});
 		}
 
-		
 		return post;
-
 	}
+
 
 }
