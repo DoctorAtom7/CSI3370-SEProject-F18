@@ -154,3 +154,29 @@ export const home_posts = async () => {
     )
     return await response.json()
 }
+
+export const like_post = async (post_id) => {
+    const data = {
+        post_id,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/like',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+
+}

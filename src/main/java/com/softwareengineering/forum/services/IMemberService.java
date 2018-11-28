@@ -10,6 +10,8 @@ public interface IMemberService {
 
     public Member getMemberById(int id);
 
+    public Post getPostById(int id);
+
     public Member getMemberByUsername(String name);
 
     public void createPost(Post post);
@@ -19,4 +21,6 @@ public interface IMemberService {
     public List<Post> getTopPosts(Member member);
 
     public List<Post> getAllPosts(int limit);
+
+    public void likePost(Post post, Member member);
 }

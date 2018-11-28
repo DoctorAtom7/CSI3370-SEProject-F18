@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
 import Post from './Post.js'
-import { get_top_posts, submit_edited_post } from '../api/Api'
+import { get_top_posts, submit_edited_post, like_post } from '../api/Api'
 
 class TopUserPost extends Component {
 
@@ -23,6 +23,8 @@ class TopUserPost extends Component {
 
     handle_up_vote = (id) => {
         let postArray = this.state.posts
+
+        like_post(id)
 
         for (let i = 0; i < postArray.length; i++) {
             if (postArray[i].postId === id && !postArray[i].voted) {

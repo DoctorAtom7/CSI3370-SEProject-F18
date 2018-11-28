@@ -24,6 +24,11 @@ public class MemberService implements IMemberService {
 		return template.query(sql, Member.mapper, new Object[] { id }).get(0);
 	}
 
+	public Post getPostById(int id) {
+		String sql = "select * from post where post_id = ?";
+		return template.query(sql, Post.mapper, new Object[] { id }).get(0);
+	}
+
 	public Member getMemberByUsername(String name) {
 		String sql = "select * from member where username = ?";
 		return template.query(sql, Member.mapper, new Object[] { name }).get(0);
@@ -73,9 +78,16 @@ public class MemberService implements IMemberService {
 		return postList;
 	}
 
-	public void likePost(Post post) {
-		String sql = "update post set post_like = ? where post_id = ?";
-		template.update(sql, post.getPostLike() + 1, post.getPostId());
+	public void likePost(Post post, Member member) {
+		String sql0 = "select count(*) from user_likes where member_id = ? and post_id = ?";
+		int exists = template.queryForObject(sql0, new Object[] { member.getId(), post.getPostId() }, Integer.class);
+		if (exists > 0) {
+			return;
+		}
+		String sql1 = "update post set post_like = ? where post_id = ?";
+		String sql2 = "insert into user_likes (member_id, post_id) values (?, ?)";
+		template.update(sql1, post.getPostLike() + 1, post.getPostId());
+		template.update(sql2, member.getId(), post.getPostId());
 	}
 
 	public void editPost(String title, String body, String id) {
@@ -90,7 +102,6 @@ public class MemberService implements IMemberService {
 
 	public void updatePassword(String username, String password) {
 		String sql = "update member set password_hash = ? where username = ?";
-		template.update(sql, email, username);
+		template.update(sql, password, username);
 	}
 }
-

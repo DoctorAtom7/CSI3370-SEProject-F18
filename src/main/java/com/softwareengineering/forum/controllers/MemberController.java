@@ -38,6 +38,19 @@ class MemberController {
 	private String secretKey;
 	private String issuer = "forum";
 
+	private Member getMemberByJWT(String jwt) {
+		Algorithm algorithm = Algorithm.HMAC256(secretKey);
+		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
+		try {
+			DecodedJWT decoded = verifier.verify(jwt);
+			int id = decoded.getClaim("userID").asInt();
+			Member member = service.getMemberById(id);
+			return member;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public Member getMemberById(@PathVariable("id") int id) {
@@ -53,18 +66,14 @@ class MemberController {
 
 	@PostMapping(value = "memberInfo", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public Map<String, Object> getMemberInfo(@RequestParam Map<String, String> map) {
-		Algorithm algorithm = Algorithm.HMAC256(secretKey);
-		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
-		System.out.println(map.get("token"));
-		DecodedJWT jwt = verifier.verify(map.get("token"));
-		String self = jwt.getClaim("username").asString();
+		Member self = getMemberByJWT(map.get("token"));
 		String name = map.get("username");
 
 		Map<String, Object> response = new HashMap<>();
 		Member requestedMember = service.getMemberByUsername(name);
 
 		// User is requesting self info
-		if (self.equals(name)) {
+		if (requestedMember.equals(self)) {
 			requestedMember.setPasswordHash(null);
 			response.put("isSelf", true);
 		} else { // User is another member's info
@@ -79,30 +88,13 @@ class MemberController {
 
 	}
 
-	private Member getMemberByJWT(String jwt) {
-		Algorithm algorithm = Algorithm.HMAC256(secretKey);
-		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
-		try {
-			DecodedJWT decoded = verifier.verify(jwt);
-			int id = decoded.getClaim("userID").asInt();
-			Member member = service.getMemberById(id);
-			return member;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "createPost")
 	public void createPost(@RequestParam Map<String, String> map) {
 
-		Algorithm algorithm = Algorithm.HMAC256(secretKey);
-		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
-		DecodedJWT jwt = verifier.verify(map.get("token"));
-		int id = jwt.getClaim("userID").asInt();
+		Member creator = getMemberByJWT(map.get("token"));
 		String title = map.get("title");
 		String body = map.get("body");
-		Member creator = service.getMemberById(id);
 
 		Post post = new Post(title, body, creator);
 		service.createPost(post);
@@ -129,11 +121,7 @@ class MemberController {
 	@PostMapping(value = "topPosts", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<List<Post>> getTopPosts(@RequestParam Map<String, String> map) {
 		List<Post> postList = null;
-
 		String username = map.get("username");
-
-		System.out.println(username);
-
 		Member member = service.getMemberByUsername(username);
 
 		try {
@@ -146,12 +134,11 @@ class MemberController {
 	}
 
 	// liking system endpoint
-
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "like", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public void likePost(@RequestBody Post post) {
-		// Validate first
-		service.likePost(post);
+	@PostMapping(value = "like", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void likePost(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		service.likePost(service.getPostById(Integer.valueOf(map.get("post_id"))), member);
 	}
 
 	@ResponseStatus(HttpStatus.OK)

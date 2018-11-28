@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS member(
+CREATE TABLE IF NOT EXISTS member (
 	member_id SERIAL PRIMARY KEY,
 	username VARCHAR(50) UNIQUE NOT NULL,
 	email VARCHAR(255) UNIQUE NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS member(
 	banner_url TEXT default 'https://upload.wikimedia.org/wikipedia/commons/1/17/Aquarius_Proprius_4_Orange-Blue_%287251980240%29.jpg'
 );
 
-CREATE TABLE IF NOT EXISTS post(
+CREATE TABLE IF NOT EXISTS post (
 	post_id SERIAL PRIMARY KEY,
 	title TEXT, 
 	body TEXT,
@@ -21,3 +21,8 @@ CREATE TABLE IF NOT EXISTS post(
 	member_id integer references member 
 );
 
+CREATE TABLE IF NOT EXISTS user_likes (
+	id serial primary key,
+	member_id integer references member,
+	post_id integer references post
+)

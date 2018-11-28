@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Post from "./Post";
 import Typography from '@material-ui/core/Typography'
-import { home_posts } from '../api/Api.js'
+import { home_posts, like_post } from '../api/Api.js'
 
 const style = {
     root: {
@@ -32,6 +32,8 @@ class HomePage extends Component {
 
     handle_up_vote = (id) => {
         let postArray = this.state.posts
+
+        like_post(id)
 
         for (let i = 0; i < postArray.length; i++) {
             if (postArray[i].postId === id && !postArray[i].voted) {

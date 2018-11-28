@@ -12,7 +12,6 @@ import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
-
 import { withStyles } from '@material-ui/core/styles'
 
 const ListItemStyles = {
