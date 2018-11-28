@@ -83,22 +83,18 @@ class MemberController {
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
 		try {
-			DecodedJWT jwt = verifier.verify(jwt);
-			int id jwt.getClaim("userID").asString();
+			DecodedJWT decoded = verifier.verify(jwt);
+			int id = decoded.getClaim("userID").asInt();
 			Member member = service.getMemberById(id);
 			return member;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
-
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "createPost")
 	public void createPost(@RequestParam Map<String, String> map) {
-
-		map.forEach((k, v) -> System.out.println(k + "\t" + v));
 
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 		JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
@@ -173,16 +169,16 @@ class MemberController {
 	public void updateEmail(@RequestParam Map<String, String> map) {
 		Member member = getMemberByJWT(map.get("token"));
 		String email = map.get("email");
-		if(member.passwordHash == map.get("oldPassword")) {
-			service.updateEmail(username, email);
+		if (member.getPasswordHash() == map.get("oldPassword")) {
+			service.updateEmail(member.getUsername(), email);
 		}
 	}
 
-	public updatePassword(@RequestParam Map<String, String> map) {
+	public void updatePassword(@RequestParam Map<String, String> map) {
 		Member member = getMemberByJWT(map.get("token"));
 		String password = map.get("newPassword");
-		if(member.passwordHash == map.get("oldPassword")) {
-			service.updateEmail(username, password);
+		if (member.getPasswordHash() == map.get("oldPassword")) {
+			service.updateEmail(member.getUsername(), password);
 		}
 	}
 }
