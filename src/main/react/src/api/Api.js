@@ -1,8 +1,8 @@
-export const create_account = async (username, email, password) => {
+export const create_account = async (username, email, passwordHash) => {
     let data = {
         username,
         email,
-        password
+        passwordHash
     }
 
     let response = await fetch(
@@ -177,6 +177,21 @@ export const like_post = async (post_id) => {
             body: formBody
         },
     )
+}
 
+export const view_thread = async (post_id) => {
 
+    let response = await fetch(
+        '/post/thread?post_id=' + post_id, 
+        {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            }
+        },
+    )
+
+    return await response.json()
 }

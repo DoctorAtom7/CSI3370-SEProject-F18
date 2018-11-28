@@ -104,4 +104,27 @@ public class MemberService implements IMemberService {
 		String sql = "update member set password_hash = ? where username = ?";
 		template.update(sql, password, username);
 	}
+
+	public List<Post> getChildren(int parent_id){
+		String sql = "select * from post where parent_id = ?";
+		System.out.println("About to query....");
+		return template.query(sql, new Object[] {parent_id}, Post.mapper);
+	}
+
+	public Post getAllComments(Post post) {
+		post.setChildren(getChildren(post.getPostId()));
+
+		System.out.println("ERROR! We got here");
+
+		if (post.getChildren().size() > 0){
+			post.getChildren().forEach(child -> {
+				getAllComments(child);
+			});
+		}
+
+		
+		return post;
+
+	}
+
 }

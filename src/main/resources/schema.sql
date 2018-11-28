@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS post (
 	body TEXT,
 	post_like integer DEFAULT 0,
 	creation_date TIMESTAMP default now(),
-	member_id integer references member 
+	member_id integer references member,
+	parent_id integer references post default null 
 );
 
 CREATE TABLE IF NOT EXISTS user_likes (

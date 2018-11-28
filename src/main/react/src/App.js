@@ -11,6 +11,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import Snack from './components/Snack'
 import Toolbar from '@material-ui/core/Toolbar';
+import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import MemberPage from './components/MemberPage'
 import { memberList } from './components/SideLists'
@@ -21,6 +22,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 import PostEditor from './components/PostEditor';
 import HomePage from './components/HomePage'
+import Thread from './components/Thread'
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -136,6 +138,11 @@ const styles = theme => ({
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 2,
   }
 });
 
@@ -221,6 +228,7 @@ class App extends Component {
             <Route exact path="/createPost" render={(props) => <PostEditor type='create' {...props} />} />
             <Route path="/user/:username" render={(props) => <MemberPage {...props} />} />
             <Route path="/login" render={(props) => <Login {...props} open={modal === "login"} onClose={this.modalClose} showSnack={this.changeSnack} />} />
+            <Route path="/post/:id" render={(props) => <Thread {...props} />} />
             <CreateAccount open={modal === 'create'} onClose={this.modalClose} showSnack={this.changeSnack} />
           </div>
           <Drawer
@@ -242,6 +250,9 @@ class App extends Component {
           </Drawer>
           {Snack(snack_shown, snack_message,
             "OK", () => this.handleClose("snack_shown"))}
+          {localStorage.getItem('forum-token') !== null && <Button variant="fab" component={Link} to="/createPost" className={classes.fab} color="secondary">
+            <AddIcon/>
+          </Button>}
         </div>
       </BrowserRouter>
     );

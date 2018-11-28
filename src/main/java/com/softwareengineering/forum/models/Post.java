@@ -1,6 +1,7 @@
 package com.softwareengineering.forum.models;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -21,6 +22,7 @@ public class Post {
     private Date creationDate;
     private int memberId;
     private Member creator;
+    private List<Post> children;
 
     public Post() {
 
