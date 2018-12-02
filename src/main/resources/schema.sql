@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS member (
 	member_id SERIAL PRIMARY KEY,
 	username VARCHAR(50) UNIQUE NOT NULL,
+	bio TEXT default 'No bio given',
 	email VARCHAR(255) UNIQUE NOT NULL,
 	verified BOOLEAN DEFAULT 'n',
 	create_date TIMESTAMP DEFAULT now(),

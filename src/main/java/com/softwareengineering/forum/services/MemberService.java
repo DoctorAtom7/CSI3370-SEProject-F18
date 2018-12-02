@@ -57,7 +57,7 @@ public class MemberService implements IMemberService {
 
 	public List<Post> getTopPosts(Member member) {
 		// select p from Post where p.member = :member order by like_count
-		String sql = "select * from post where member_id = ? order by post_like";
+		String sql = "select * from post where member_id = ? order by post_like desc";
 		List<Post> postList = template.query(sql, Post.mapper, member.getId());
 
 		Member displayedMember = new Member();
@@ -100,6 +100,11 @@ public class MemberService implements IMemberService {
 		template.update(sql, title, body, Integer.valueOf(id));
 	}
 
+	public void editMember(Member member) {
+		String sql = "update member set username = ?, bio = ?, password_hash = ? where member_id = ?";
+		template.update(sql, member.getUsername(), member.getBio(), member.getPasswordHash(), member.getId());
+	}
+
 	public void updateEmail(String username, String email) {
 		String sql = "update member set email = ? where username = ?";
 		template.update(sql, email, username);
@@ -110,16 +115,15 @@ public class MemberService implements IMemberService {
 		template.update(sql, password, username);
 	}
 
-	public List<Post> getChildren(int parent_id){
+	public List<Post> getChildren(int parent_id) {
 		String sql = "select * from post where parent_id = ?";
-		return template.query(sql, new Object[] {parent_id}, Post.mapper);
+		return template.query(sql, new Object[] { parent_id }, Post.mapper);
 	}
 
 	public Post getAllComments(Post post) {
 		post.setChildren(getChildren(post.getPostId()));
 
-
-		if (post.getChildren().size() > 0){
+		if (post.getChildren().size() > 0) {
 			post.getChildren().forEach(child -> {
 				getAllComments(child);
 			});
@@ -127,6 +131,5 @@ public class MemberService implements IMemberService {
 
 		return post;
 	}
-
 
 }

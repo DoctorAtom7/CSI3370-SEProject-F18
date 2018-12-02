@@ -61,6 +61,11 @@ class UserCard extends Component {
         this.setState(state => ({ expanded: !state.expanded }));
     }
 
+    handle_submit = () => {
+        this.props.submit_edit()
+        this.setState({ open: false })
+    }
+
 
     copyToClipboard = () => {
         try {
@@ -72,7 +77,6 @@ class UserCard extends Component {
             console.error(e)
         }
     }
-
 
     renderButtons = (classes, is_self) => {
         if (is_self) {
@@ -114,7 +118,7 @@ class UserCard extends Component {
     }
 
     render() {
-        const { username, bio, image, is_mod, classes, is_self, email } = this.props
+        const { username, bio, image, is_mod, classes, is_self, email, banner_url, new_password, new_check } = this.props
         const { open, expandOpen } = this.state
         let imgurl = image
         if (imgurl === null || imgurl === undefined) {
@@ -131,7 +135,7 @@ class UserCard extends Component {
                     alt="User banner picture"
                     className={classes.media}
                     height="140"
-                    image={imgurl}
+                    image={banner_url}
                     title="Contemplative Reptile"
                 />
                 <CardContent>
@@ -174,6 +178,9 @@ class UserCard extends Component {
                 />
                 <EditMember
                     handleChange={this.props.handleChange}
+                    handleSubmit={this.handle_submit}
+                    new_password={new_password}
+                    new_check={new_check}
                     username={username}
                     email={email}
                     bio={bio}

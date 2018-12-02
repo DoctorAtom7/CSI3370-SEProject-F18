@@ -10,13 +10,16 @@ import TextField from '@material-ui/core/TextField';
 
 class EditMember extends Component {
 
-    submit_changes = () => {
-        console.log(this.props)
+    check_submit = () => {
+        if (this.props.new_check !== this.props.new_password) {
+            alert('Passwords do not match')
+        } else {
+            this.props.handleSubmit()
+        }
     }
 
     render() {
-        const { open, onClose, username, email, bio, handleChange } = this.props;
-
+        const { open, onClose, username, email, bio, handleChange, new_password, new_check } = this.props;
 
         return (
             <Dialog open={open} onClose={() => onClose()}>
@@ -36,6 +39,24 @@ class EditMember extends Component {
                             variant="outlined"
                         />
                         <TextField
+                            style={{ width: '60%' }}
+                            label='Password'
+                            type='password'
+                            value={new_password}
+                            onChange={handleChange('new_password')}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
+                            style={{ width: '60%' }}
+                            label='Confirm Password'
+                            type='password'
+                            value={new_check}
+                            onChange={handleChange('new_check')}
+                            margin="normal"
+                            variant="outlined"
+                        />
+                        <TextField
                             id="description"
                             label="Bio"
                             multiline
@@ -49,7 +70,7 @@ class EditMember extends Component {
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.submit_changes}>Submit</Button>
+                    <Button onClick={this.check_submit}>Submit</Button>
                 </DialogActions>
             </Dialog >
         )

@@ -182,7 +182,7 @@ export const like_post = async (post_id) => {
 export const view_thread = async (post_id) => {
 
     let response = await fetch(
-        '/post/thread?post_id=' + post_id, 
+        '/post/thread?post_id=' + post_id,
         {
             method: 'GET',
             credentials: 'include',
@@ -208,7 +208,38 @@ export const post_comment = async (parent_id, body) => {
         .join('&')
 
     let response = await fetch(
-        '/member/add_comment', 
+        '/member/add_comment',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+
+}
+
+export const submit_edited_content = async (member) => {
+    const { email, password, bio } = member
+
+    const data = {
+        email,
+        password,
+        bio,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/editMemberInfo',
         {
             method: 'POST',
             credentials: 'include',

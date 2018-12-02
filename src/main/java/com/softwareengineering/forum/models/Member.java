@@ -11,6 +11,7 @@ public class Member {
 	private String email;
 	private String passwordHash;
 	private boolean isMod;
+	private String bio;
 	private String bannerUrl;
 
 	public Member() {
@@ -27,13 +28,15 @@ public class Member {
 		this.email = email;
 	}
 
-	public Member(int id, String username, String email, String password_hash, boolean isMod, String bannerUrl) {
+	public Member(int id, String username, String email, String password_hash, boolean isMod, String bannerUrl,
+			String bio) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.passwordHash = password_hash;
 		this.isMod = isMod;
 		this.bannerUrl = bannerUrl;
+		this.bio = bio;
 	}
 
 	@Override
@@ -43,6 +46,7 @@ public class Member {
 
 	public static RowMapper<Member> mapper = (rs, rowNum) -> {
 		return new Member(rs.getInt("member_id"), rs.getString("username"), rs.getString("email"),
-				rs.getString("password_hash"), rs.getBoolean("is_moderator"), rs.getString("banner_url"));
+				rs.getString("password_hash"), rs.getBoolean("is_moderator"), rs.getString("banner_url"),
+				rs.getString("bio"));
 	};
 }

@@ -1,6 +1,5 @@
 package com.softwareengineering.forum.controllers;
 
-import org.apache.naming.java.javaURLContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -173,8 +172,8 @@ class MemberController {
 		}
 	}
 
-	@PostMapping(value = "add_comment", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-	public void addComment(@RequestParam Map<String, String> map){ 
+	@PostMapping(value = "add_comment", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void addComment(@RequestParam Map<String, String> map) {
 		Member member = getMemberByJWT(map.get("token"));
 		String body = map.get("body");
 
@@ -185,8 +184,21 @@ class MemberController {
 		Post post = new Post();
 		post.setBody(body);
 		post.setMemberId(member.getId());
-		
+
 		service.createComment(post, parentId);
+	}
+
+	@PostMapping(value = "editMemberInfo", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void editMemberInfo(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		String email = map.get("email");
+		String password = map.get("password");
+		String bio = map.get("bio");
+
+		member.setEmail(email);
+		member.setPasswordHash(password);
+		member.setBio(bio);
+		service.editMember(member);
 	}
 
 }
