@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -92,6 +94,11 @@ class MemberController {
 	public void createPost(@RequestParam Map<String, String> map) {
 
 		Member creator = getMemberByJWT(map.get("token"));
+
+		if (creator.isMuted()) {
+			return;
+		}
+
 		String title = map.get("title");
 		String body = map.get("body");
 
@@ -175,9 +182,11 @@ class MemberController {
 	@PostMapping(value = "add_comment", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public void addComment(@RequestParam Map<String, String> map) {
 		Member member = getMemberByJWT(map.get("token"));
-		String body = map.get("body");
+		if (member.isMuted()) {
+			return;
+		}
 
-		System.out.println(body);
+		String body = map.get("body");
 
 		int parentId = Integer.valueOf(map.get("parent_id"));
 
@@ -199,6 +208,61 @@ class MemberController {
 		member.setPasswordHash(password);
 		member.setBio(bio);
 		service.editMember(member);
+	}
+
+	@PostMapping(value = "muteMember", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void muteMember(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		if (!member.isMod()) {
+			return;
+		}
+
+		int badActor = Integer.valueOf(map.get("member_id"));
+		Timestamp muted_until = Timestamp.valueOf(map.get("muted_until"));
+
+		service.muteMember(badActor, muted_until);
+	}
+
+	@PostMapping(value = "flaggedPosts", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public ResponseEntity<List<Post>> getFlagged(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		if (!member.isMod()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		return new ResponseEntity<>(service.getFlagged(), HttpStatus.OK);
+
+	}
+
+	@PostMapping(value = "flagPost", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void flagPost(@RequestParam Map<String, String> map) {
+		int id = Integer.valueOf(map.get("post_id"));
+
+		service.flagPost(id);
+
+	}
+
+	@PostMapping(value = "deletePost", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public ResponseEntity<Post> deletePost(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		int postId = Integer.valueOf(map.get("post_id"));
+
+		if (member.isMod()) {
+			try {
+				return new ResponseEntity<>(service.modDeletePost(postId), HttpStatus.OK);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+
+		try {
+			return new ResponseEntity<>(service.deletePost(postId, member.getId()), HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
 	}
 
 }

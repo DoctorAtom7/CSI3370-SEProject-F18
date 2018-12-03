@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit'
 import FlagIcon from '@material-ui/icons/Flag'
 import ThumbOutlined from '@material-ui/icons/ThumbUpOutlined'
@@ -13,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
+import { delete_post } from '../api/Api';
 
 const ListItemStyles = {
     listItem: {
@@ -53,6 +55,25 @@ const ListItemStyles = {
 }
 
 class Post extends Component {
+
+    thread_id = () => {
+        if (this.props.data.comment) {
+            return this.props.data.parentId
+        }
+        return this.props.data.postId
+    }
+
+    show_edit = () => {
+        return (localStorage.getItem('csi3370-user') === this.props.data.creator.username)
+    }
+
+    show_delete = () => {
+        let isMod = false;
+        if (localStorage.getItem('csi-is-mod') === 'true') {
+            isMod = true
+        }
+        return (isMod || localStorage.getItem('csi3370-user') === this.props.data.creator.username)
+    }
 
     render() {
         let { data } = this.props
@@ -97,24 +118,26 @@ class Post extends Component {
                         </div>
                     </div>
                     <div style={style.buttonRow}>
-                        <IconButton>
+                        <IconButton component={Link} to={"/post/" + this.thread_id()}>
                             <Comment />
                         </IconButton>
-                        <IconButton>
+                        {localStorage.getItem('csi-is-mod') && <IconButton>
                             <FlagIcon />
-                        </IconButton>
-                        <IconButton onClick={() => this.props.edit_post(data.title, data.body, data.postId)}>
+                        </IconButton>}
+                        {this.show_edit() && < IconButton onClick={() => this.props.edit_post(data.title, data.body, data.postId)}>
                             <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => this.props.handle_vote(data.postId)}>
-                            <ThumbOutlined />
-                        </IconButton>
-                        <IconButton>
+                        </IconButton>}
+                        {localStorage.getItem('forum-token') !== null &&
+                            <IconButton onClick={() => this.props.handle_vote(data.postId)}>
+                                <ThumbOutlined />
+                            </IconButton>
+                        }
+                        {this.show_delete() && <IconButton onClick={() => delete_post(this.props.data.postId)}>
                             <Delete />
-                        </IconButton>
+                        </IconButton>}
                     </div>
                 </Card>
-            </ListItem>
+            </ListItem >
         )
     }
 }

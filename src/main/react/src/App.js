@@ -251,7 +251,7 @@ class App extends Component {
           {Snack(snack_shown, snack_message,
             "OK", () => this.handleClose("snack_shown"))}
           {localStorage.getItem('forum-token') !== null && <Button variant="fab" component={Link} to="/createPost" className={classes.fab} color="secondary">
-            <AddIcon/>
+            <AddIcon />
           </Button>}
         </div>
       </BrowserRouter>

@@ -1,5 +1,7 @@
 package com.softwareengineering.forum.models;
 
+import java.sql.Timestamp;
+
 import org.springframework.jdbc.core.RowMapper;
 
 import lombok.Data;
@@ -13,6 +15,8 @@ public class Member {
 	private boolean isMod;
 	private String bio;
 	private String bannerUrl;
+	private boolean muted;
+	private Timestamp mutedUntil;
 
 	public Member() {
 	}
@@ -29,7 +33,7 @@ public class Member {
 	}
 
 	public Member(int id, String username, String email, String password_hash, boolean isMod, String bannerUrl,
-			String bio) {
+			String bio, boolean muted, Timestamp time) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
@@ -37,6 +41,7 @@ public class Member {
 		this.isMod = isMod;
 		this.bannerUrl = bannerUrl;
 		this.bio = bio;
+		this.mutedUntil = time;
 	}
 
 	@Override
@@ -47,6 +52,6 @@ public class Member {
 	public static RowMapper<Member> mapper = (rs, rowNum) -> {
 		return new Member(rs.getInt("member_id"), rs.getString("username"), rs.getString("email"),
 				rs.getString("password_hash"), rs.getBoolean("is_moderator"), rs.getString("banner_url"),
-				rs.getString("bio"));
+				rs.getString("bio"), rs.getBoolean("is_muted"), rs.getTimestamp("muted_until"));
 	};
 }

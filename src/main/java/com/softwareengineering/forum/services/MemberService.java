@@ -1,5 +1,6 @@
 package com.softwareengineering.forum.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class MemberService implements IMemberService {
 	}
 
 	public void createComment(Post post, int parentId) {
-		String sql = "insert into post (body, member_id, parent_id) values (?, ?, ?)";
+		String sql = "insert into post (body, member_id, parent_id, is_comment) values (?, ?, ?, true)";
 		template.update(sql, post.getBody(), post.getMemberId(), parentId);
 	}
 
@@ -129,6 +130,45 @@ public class MemberService implements IMemberService {
 			});
 		}
 
+		return post;
+	}
+
+	public void muteMember(int badActor, Timestamp muted_until) {
+		String sql = "update member set is_muted = true, muted_until = ? where member_id = ?";
+		template.update(sql, muted_until, badActor);
+	}
+
+	public List<Post> getFlagged() {
+		String sql = "select * from post where is_flagged = true";
+		return template.query(sql, Post.mapper);
+	}
+
+	public void flagPost(int id) {
+		String sql = "update post set is_flagged = true where post_id = ?";
+		template.update(sql, id);
+	}
+
+	public Post deletePost(int postId, int memberId) {
+		Post post = getPostById(postId);
+		String sql = "update post set body='[deleted]' where post_id = ? and member_id = ?";
+		post.setBody("[deleted]");
+		if (!post.isComment()) {
+			sql = "update post set title = '[deleted]', body='[deleted]' where post_id = ? and member_id = ?";
+			post.setTitle("[deleted]");
+		}
+		template.update(sql, postId, memberId);
+		return post;
+	}
+
+	public Post modDeletePost(int postId) {
+		Post post = getPostById(postId);
+		String sql = "update post set body='[deleted]' where post_id = ?";
+		post.setBody("[deleted]");
+		if (!post.isComment()) {
+			sql = "update post set title = '[deleted]', body='[deleted]' where post_id = ?";
+			post.setTitle("[deleted]");
+		}
+		template.update(sql, postId);
 		return post;
 	}
 

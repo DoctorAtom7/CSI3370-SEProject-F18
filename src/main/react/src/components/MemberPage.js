@@ -29,6 +29,14 @@ class MemberPage extends Component {
         const member = this.props.location.pathname.substring(6, this.props.location.pathname.length)
         get_member(member).then(data => {
             let is_self = data.isSelf
+
+            if (is_self) {
+                localStorage.setItem('csi3370-user', data.member.username)
+            }
+
+            if (is_self && data.member.mod) {
+                localStorage.setItem('csi-is-mod', true)
+            }
             let banner_url = data.member.bannerUrl
             let { username, email, mod, bio } = data.member
             if (bio === null || bio === undefined) {
@@ -36,6 +44,7 @@ class MemberPage extends Component {
             }
             this.setState({ username, email, mod, bio, is_self, banner_url })
         }).catch(error => {
+            console.log(error)
             this.setState({ error: true })
         })
     }

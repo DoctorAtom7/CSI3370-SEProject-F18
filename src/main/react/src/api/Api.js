@@ -254,3 +254,80 @@ export const submit_edited_content = async (member) => {
     return await response.json()
 
 }
+
+export const get_reported_posts = async () => {
+    const data = {
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/flaggedPosts',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+}
+
+export const flag_post = async (post_id) => {
+    const data = {
+        post_id,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/flagPost',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+}
+
+export const delete_post = async (post_id) => {
+    const data = {
+        post_id,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/deletePost',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+}
