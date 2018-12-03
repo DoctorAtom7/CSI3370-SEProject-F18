@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS member (
 	It is licensed under the terms of the cc-by-2.0. */
 	banner_url TEXT default 'https://upload.wikimedia.org/wikipedia/commons/1/17/Aquarius_Proprius_4_Orange-Blue_%287251980240%29.jpg',
 	is_muted BOOLEAN default 'n',
+	is_flagged BOOLEAN default 'n',
 	muted_until TIMESTAMP default null
 );
 

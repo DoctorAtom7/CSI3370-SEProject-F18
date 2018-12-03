@@ -34,4 +34,10 @@ public interface IMemberService {
     public Post deletePost(int postId, int memberId);
 
     public Post modDeletePost(int postId);
+
+    public void banUser(String username);
+
+    public void flagUser(String username);
+
+    public List<Member> getFlaggedUsers();
 }

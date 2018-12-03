@@ -13,8 +13,7 @@ import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
-import { delete_post } from '../api/Api';
+import { delete_post, flag_post } from '../api/Api';
 
 const ListItemStyles = {
     listItem: {
@@ -121,7 +120,7 @@ class Post extends Component {
                         <IconButton component={Link} to={"/post/" + this.thread_id()}>
                             <Comment />
                         </IconButton>
-                        {localStorage.getItem('csi-is-mod') && <IconButton>
+                        {localStorage.getItem('csi-is-mod') && <IconButton onClick={() => flag_post(this.props.data.postId)}>
                             <FlagIcon />
                         </IconButton>}
                         {this.show_edit() && < IconButton onClick={() => this.props.edit_post(data.title, data.body, data.postId)}>

@@ -42,7 +42,7 @@ public class Post {
         this.memberId = member_id;
     }
 
-    public Post(String body, String title, Member creator) {
+    public Post(String title, String body, Member creator) {
         this.body = body;
         this.title = title;
         this.creator = creator;

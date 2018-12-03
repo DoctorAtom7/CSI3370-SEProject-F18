@@ -74,7 +74,7 @@ public class MemberService implements IMemberService {
 	}
 
 	public List<Post> getAllPosts(int limit) {
-		String sql = "select * from post order by post_like desc limit ?";
+		String sql = "select * from post where body not like '[deleted]' and is_comment = false order by post_like desc limit ?";
 		List<Post> postList = template.query(sql, Post.mapper, limit);
 
 		postList.forEach((post) -> {
@@ -143,6 +143,11 @@ public class MemberService implements IMemberService {
 		return template.query(sql, Post.mapper);
 	}
 
+	public List<Member> getFlaggedUsers() {
+		String sql = "select * from member where is_flagged = true";
+		return template.query(sql, Member.mapper);
+	}
+
 	public void flagPost(int id) {
 		String sql = "update post set is_flagged = true where post_id = ?";
 		template.update(sql, id);
@@ -165,11 +170,21 @@ public class MemberService implements IMemberService {
 		String sql = "update post set body='[deleted]' where post_id = ?";
 		post.setBody("[deleted]");
 		if (!post.isComment()) {
-			sql = "update post set title = '[deleted]', body='[deleted]' where post_id = ?";
+			sql = "update post set title = '[deleted]', body = '[deleted]', is_flagged = false where post_id = ?";
 			post.setTitle("[deleted]");
 		}
 		template.update(sql, postId);
 		return post;
+	}
+
+	public void banUser(String username) {
+		String sql = "update member set is_muted = true, muted_until = CURRENT_DATE + INTERVAL '14 days' where username = ?";
+		template.update(sql, username);
+	}
+
+	public void flagUser(String username) {
+		String sql = "update member set is_flagged = true  where username = ?";
+		template.update(sql, username);
 	}
 
 }

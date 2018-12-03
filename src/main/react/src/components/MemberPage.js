@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import UserCard from './UserCard';
 import TopUserPost from './TopUserPost'
 import { get_member, submit_edited_content } from '../api/Api.js'
+import ReportedList from './ReportedList';
 
 const styles = theme => ({
 
@@ -70,8 +71,12 @@ class MemberPage extends Component {
         return (
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                 {username !== 'loading' && <TopUserPost username={username} />}
-                <UserCard handleChange={this.handleChange} email={email} banner_url={banner_url} new_password={new_password}
-                    submit_edit={this.submit_edit} username={username} bio={bio} is_mod={mod} is_self={is_self} new_check={new_check} />
+                <div>
+                    <UserCard handleChange={this.handleChange} email={email} banner_url={banner_url} new_password={new_password}
+                        submit_edit={this.submit_edit} username={username} bio={bio} is_mod={mod} is_self={is_self} new_check={new_check} />
+                    <ReportedList />
+
+                </div>
             </div>
         )
     }

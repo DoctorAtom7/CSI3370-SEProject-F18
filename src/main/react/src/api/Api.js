@@ -280,6 +280,31 @@ export const get_reported_posts = async () => {
     return await response.json()
 }
 
+export const get_reported_users = async () => {
+    const data = {
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/flaggedUsers',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+}
+
 export const flag_post = async (post_id) => {
     const data = {
         post_id,
@@ -318,6 +343,32 @@ export const delete_post = async (post_id) => {
 
     let response = await fetch(
         '/member/deletePost',
+        {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' + localStorage.getItem('forum-token'),
+            },
+            body: formBody
+        },
+    )
+
+    return await response.json()
+}
+
+export const mute_user = async (username) => {
+    const data = {
+        username,
+        token: localStorage.getItem('forum-token')
+    }
+
+    const formBody = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&')
+
+    let response = await fetch(
+        '/member/muteUser',
         {
             method: 'POST',
             credentials: 'include',

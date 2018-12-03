@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -234,11 +233,35 @@ class MemberController {
 
 	}
 
+	@PostMapping(value = "flaggedUsers", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public ResponseEntity<List<Member>> getFlaggedUsers(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		if (!member.isMod()) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		return new ResponseEntity<>(service.getFlaggedUsers(), HttpStatus.OK);
+
+	}
+
 	@PostMapping(value = "flagPost", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public void flagPost(@RequestParam Map<String, String> map) {
 		int id = Integer.valueOf(map.get("post_id"));
 
 		service.flagPost(id);
+
+	}
+
+	@PostMapping(value = "muteUser", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
+	public void muteUser(@RequestParam Map<String, String> map) {
+		Member member = getMemberByJWT(map.get("token"));
+		String username = map.get("username");
+
+		if (member.isMod()) {
+			service.banUser(username);
+		} else {
+			service.flagUser(username);
+		}
 
 	}
 

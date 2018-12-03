@@ -104,9 +104,6 @@ class UserCard extends Component {
             return (
                 <Fragment >
                     <IconButton>
-                        <MessageIcon />
-                    </IconButton>
-                    <IconButton>
                         <FlagIcon />
                     </IconButton>
                     <IconButton onClick={this.copyToClipboard}>
