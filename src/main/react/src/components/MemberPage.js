@@ -74,7 +74,7 @@ class MemberPage extends Component {
                 <div>
                     <UserCard handleChange={this.handleChange} email={email} banner_url={banner_url} new_password={new_password}
                         submit_edit={this.submit_edit} username={username} bio={bio} is_mod={mod} is_self={is_self} new_check={new_check} />
-                    <ReportedList />
+                    {localStorage.getItem('csi-is-mod') == 'true' && <ReportedList />}
 
                 </div>
             </div>

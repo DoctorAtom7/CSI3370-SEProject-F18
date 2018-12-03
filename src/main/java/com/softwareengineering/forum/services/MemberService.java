@@ -16,7 +16,7 @@ public class MemberService implements IMemberService {
 	private JdbcTemplate template;
 
 	public void createMember(Member member) {
-		String sql = "insert into member (username, email, password_hash, banner_url) values (?, ?, ?, ?)";
+		String sql = "insert into member (username, email, password_hash) values (?, ?, ?)";
 		template.update(sql, member.getUsername(), member.getEmail(), member.getPasswordHash(), member.getBannerUrl());
 	}
 
@@ -27,7 +27,9 @@ public class MemberService implements IMemberService {
 
 	public Post getPostById(int id) {
 		String sql = "select * from post where post_id = ?";
-		return template.query(sql, Post.mapper, new Object[] { id }).get(0);
+		Post post = template.query(sql, Post.mapper, new Object[] { id }).get(0);
+		post.setCreator(this.getMemberById(post.getMemberId()));
+		return post;
 	}
 
 	public Member getMemberByUsername(String name) {
@@ -126,6 +128,8 @@ public class MemberService implements IMemberService {
 
 		if (post.getChildren().size() > 0) {
 			post.getChildren().forEach(child -> {
+				Member creator = this.getMemberById(child.getMemberId());
+				child.setCreator(creator);
 				getAllComments(child);
 			});
 		}

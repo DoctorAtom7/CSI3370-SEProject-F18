@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import EditIcon from '@material-ui/icons/Edit'
 import IconButton from '@material-ui/core/IconButton';
 import FlagIcon from '@material-ui/icons/Flag'
@@ -17,7 +17,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import { post_comment } from '../api/Api.js'
 
-import {view_thread} from '../api/Api.js'
+import { view_thread } from '../api/Api.js'
 import { List } from '@material-ui/core';
 
 const styles = {
@@ -30,9 +30,9 @@ const styles = {
         margin: '15px'
     },
     buttonDiv: {
-      padding: 10,
-      display: 'flex',
-      justifyContent: 'flex-end'
+        padding: 10,
+        display: 'flex',
+        justifyContent: 'flex-end'
     },
     button: {
         marginLeft: '10px',
@@ -41,107 +41,107 @@ const styles = {
 };
 
 class Thread extends Component {
-  state = {parent_id: '', title: '', body: '', postLike: '', memberId: '', creationDate: '', children: [], text: '', loading: true}
+    state = { parent_id: '', title: '', body: '', postLike: '', memberId: '', creationDate: '', children: [], text: '', loading: true }
 
-  componentDidMount(){
-    view_thread(this.props.match.params.id).then(data => {
-      data.parent_id = data.postId
-      data.loading = false
-      this.setState(data)
-    })
-  }
-
-  handleChange = name => event => {
-      this.setState({
-          [name]: event.target.value,
-      })
-  }
-
-  submit_comment = (parent_id) => {
-    post_comment(parent_id, this.state.text).then(data => {
-      console.log(data)
-    })
-  }
-
-
-  render_comments = () => {
-    let comment_block = []
-    const comments = this.state.children
-
-    if (comments.length > 0){
-      comments.forEach(element => {
-        comment_block.push(<Post data={element}/>)
-      })
+    componentDidMount() {
+        view_thread(this.props.match.params.id).then(data => {
+            data.parent_id = data.postId
+            data.loading = false
+            this.setState(data)
+        })
     }
 
-    return comment_block
-  }
-
-  render(){
-    const {parent_id, title, body, creationDate, creator, loading} = this.state
-
-    const createdAt = new Date(creationDate)
-    const date = `${createdAt.getMonth() +
-        1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
-
-    if (loading) {
-      return <div>Loading</div>
+    handleChange = name => event => {
+        this.setState({
+            [name]: event.target.value,
+        })
     }
 
-    return(
-      <Card>
-        <CardHeader
-            avatar={<Avatar>{creator}</Avatar>}
-            title={title}
-            subheader={date}
-        />
-        <CardContent >
-            <Typography
-                style={{
-                    hyphens: 'auto'
-                }}
-                variant="h6"
-            >
-                {body}
-            </Typography>
-        </CardContent>
-        <div style={styles.editorRoot}>
-            <TextField
-                id="comment-text"
-                label="Continue the conversation..."
-                multiline
-                rows="5"
-                value={this.state.text}
-                onChange={this.handleChange('text')}
-                style={styles.textField}
-                margin="normal"
-                variant="outlined"
-            />
-            <div style={styles.buttonDiv}>
-              <IconButton>
-                  <FlagIcon />
-              </IconButton>
-              <IconButton onClick={() => this.props.edit_post(title, body, parent_id)}>
-                  <EditIcon />
-              </IconButton>
-              <IconButton onClick={() => this.props.handle_vote(parent_id)}>
-                  <ThumbOutlined />
-              </IconButton>
-              <IconButton>
-                  <Delete />
-              </IconButton>
-              <Button variant="contained" style={styles.button} color='primary' onClick={() => this.submit_comment(parent_id)}>
-                  Comment
+    submit_comment = (parent_id) => {
+        post_comment(parent_id, this.state.text).then(data => {
+            console.log(data)
+        })
+    }
+
+
+    render_comments = () => {
+        let comment_block = []
+        const comments = this.state.children
+
+        if (comments.length > 0) {
+            comments.forEach(element => {
+                comment_block.push(<Post data={element} />)
+            })
+        }
+
+        return comment_block
+    }
+
+    render() {
+        const { parent_id, title, body, creationDate, creator, loading } = this.state
+
+        const createdAt = new Date(creationDate)
+        const date = `${createdAt.getMonth() +
+            1}/${createdAt.getDate()}/${createdAt.getFullYear()}`
+
+        if (loading) {
+            return <div>Loading</div>
+        }
+
+        return (
+            <Card>
+                <CardHeader
+                    avatar={<Avatar>{creator.username}</Avatar>}
+                    title={title}
+                    subheader={date}
+                />
+                <CardContent >
+                    <Typography
+                        style={{
+                            hyphens: 'auto'
+                        }}
+                        variant="h6"
+                    >
+                        {body}
+                    </Typography>
+                </CardContent>
+                <div style={styles.editorRoot}>
+                    <TextField
+                        id="comment-text"
+                        label="Continue the conversation..."
+                        multiline
+                        rows="5"
+                        value={this.state.text}
+                        onChange={this.handleChange('text')}
+                        style={styles.textField}
+                        margin="normal"
+                        variant="outlined"
+                    />
+                    <div style={styles.buttonDiv}>
+                        <IconButton>
+                            <FlagIcon />
+                        </IconButton>
+                        <IconButton onClick={() => this.props.edit_post(title, body, parent_id)}>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => this.props.handle_vote(parent_id)}>
+                            <ThumbOutlined />
+                        </IconButton>
+                        <IconButton>
+                            <Delete />
+                        </IconButton>
+                        <Button variant="contained" style={styles.button} color='primary' onClick={() => this.submit_comment(parent_id)}>
+                            Comment
               </Button>
-            </div>
-            <Divider/>
-        </div>
-        <List>
-          {this.render_comments()}
-        </List>
-      </Card>
-    )
-  }
+                    </div>
+                    <Divider />
+                </div>
+                <List>
+                    {this.render_comments()}
+                </List>
+            </Card>
+        )
+    }
 }
 
 

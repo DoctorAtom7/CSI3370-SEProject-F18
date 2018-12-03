@@ -186,7 +186,7 @@ class App extends Component {
                 <IconButton className={classes.menuButton} onClick={() => { this.setState({ open_drawer: true }) }} color="inherit" aria-label="Open drawer">
                   <MenuIcon />
                 </IconButton>
-                <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                <Typography className={classes.title} variant="h6" component={Link} to="/" color="inherit" noWrap>
                   FreeReign
                 </Typography>
 

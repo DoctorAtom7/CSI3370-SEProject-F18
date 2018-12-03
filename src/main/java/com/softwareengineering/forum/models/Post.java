@@ -2,8 +2,10 @@ package com.softwareengineering.forum.models;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
+import com.softwareengineering.forum.services.MemberService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 
 import lombok.Data;
@@ -26,6 +28,9 @@ public class Post {
     private boolean isComment;
     private int parentId;
     private List<Post> children;
+
+    @Autowired
+    private MemberService service;
 
     public Post() {
 
